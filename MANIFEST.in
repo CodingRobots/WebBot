@@ -1,0 +1,4 @@
+recursive-include webbot/public *
+include webbot/public/favicon.ico
+recursive-include webbot/i18n *
+recursive-include webbot/templates *
