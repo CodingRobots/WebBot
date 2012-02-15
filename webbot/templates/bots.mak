@@ -8,7 +8,7 @@
 	%for index, robot in enumerate(robot_infos):
 		$(function() {
 			$( "#pb${index}" ).progressbar({
-				value: ${robot['health']}
+				value: 100
 			});
 		});
 	%endfor
