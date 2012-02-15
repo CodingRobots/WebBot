@@ -43,7 +43,8 @@ class RootController(BaseController):
     @expose('webbot.templates.bots')
     def robots(self):
         """Handle the 'about' page."""
-        return dict(id='1234567890')
+        id='1234567890'
+        return dict(id=id, robot_infos=self.robo_data(id))
 
     @expose('json')
     def robo_data(self, game_id):
@@ -78,11 +79,11 @@ class RootController(BaseController):
         explosions = [{'loc': (30, 50), 'size': 3},
                       {'loc': (70, 30), 'size': 5},
                       ]
-        walls = [{'loc': (1, 1), 'length': 100, 'direction': 'v')},
-                 {'loc': (1, 1), 'length': 100, 'direction': 'h')},
+        walls = [{'loc': (1, 1), 'length': 100, 'direction': 'v'},
+                 {'loc': (1, 1), 'length': 100, 'direction': 'h'},
                  ]
         time = 'x:xx'
-        return dict(robot_infos=robots, bullets=bullets, explosions=explosions.
+        return dict(robot_infos=robots, bullets=bullets, explosions=explosions,
                     walls=walls, time=time)
 
 
