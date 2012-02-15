@@ -12,10 +12,6 @@
 			});
 		});
 	%endfor
-
-	function update() {
-	  for
-	}
 </script>
 
 
