@@ -94,7 +94,7 @@
 <%def name="main_menu()">
   <ul id="mainmenu">
     <li class="first"><a href="${tg.url('/')}" class="${('', 'active')[page=='index']}">Welcome</a></li>
-        <li><a href="${tg.url('/about')}" class="${('', 'active')[page=='about']}">About</a></li>
+        <li><a href="${tg.url('/robots')}" class="${('', 'active')}">Robots!</a></li>
         <li><a href="${tg.url('/environ')}" class="${('', 'active')[page=='environ']}">WSGI Environment</a></li>
         <li><a href="${tg.url('/data')}" class="${('', 'active')[page=='data']}">Content-Types</a></li>
 

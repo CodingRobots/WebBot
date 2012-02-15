@@ -40,10 +40,51 @@ class RootController(BaseController):
         """Handle the front-page."""
         return dict(page='index')
 
-    @expose('webbot.templates.about')
-    def about(self):
+    @expose('webbot.templates.bots')
+    def robots(self):
         """Handle the 'about' page."""
-        return dict(page='about')
+        return dict(id='1234567890')
+
+    @expose('json')
+    def robo_data(self, game_id):
+        """Returns the current state of the game as JSON."""
+        # loc is the current location of the robot in
+        #   (x, y, robot_orientation, turret_orientation)
+        # format
+        robots = [{'name': 'robo1',
+                   'health': 100,
+                   'loc': (5, 5, 1, 2),
+                   },
+                  {'name': 'robo2',
+                   'health': 25,
+                   'loc': (5, 5, 1, 2),
+                   },
+                  {'name': 'robo3',
+                   'health': 30,
+                   'loc': (5, 5, 1, 2),
+                   },
+                  {'name': 'robo4',
+                   'health': 70,
+                   'loc': (5, 5, 1, 2),
+                   },
+                  {'name': 'robo5',
+                   'health': 65,
+                   'loc': (5, 5, 1, 2),
+                   },
+                  ]
+        bullets = [{'loc': (5, 5)},
+                   {'loc': (5, 10)},
+                   ]
+        explosions = [{'loc': (30, 50), 'size': 3},
+                      {'loc': (70, 30), 'size': 5},
+                      ]
+        walls = [{'loc': (1, 1), 'length': 100, 'direction': 'v')},
+                 {'loc': (1, 1), 'length': 100, 'direction': 'h')},
+                 ]
+        time = 'x:xx'
+        return dict(robot_infos=robots, bullets=bullets, explosions=explosions.
+                    walls=walls, time=time)
+
 
     @expose('webbot.templates.environ')
     def environ(self):
