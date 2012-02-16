@@ -28,7 +28,7 @@
     </div>
   %endfor
   <div>
-    <h2>Time Remaining: X:XX</h2>
+    <h2>Time Remaining: <span id='timeleft'>X:XX</span></h2>
   </div>
 </div>
 <div style="clear:both"/>
