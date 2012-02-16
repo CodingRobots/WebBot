@@ -41,10 +41,16 @@ class RootController(BaseController):
         return dict(page='index')
 
     @expose('webbot.templates.bots')
-    def robots(self):
+    def game(self, game_id=''):
         """Handle the 'about' page."""
-        id='1234567890'
-        return dict(id=id, robot_infos=self.robo_data(id))
+        game_id='1234567890'
+        return dict(game_id=id, robot_infos=self.robo_data(id))
+
+    @expose('webbot.templates.list')
+    def robots(self):
+        """List all the available robots."""
+        robo_list = ['Ninja', 'Pirate', 'Robot', 'Wizard', 'Velociraptor', 'Robot']
+        return dict(robots=robo_list)
 
     @expose('json')
     def robo_data(self, game_id):
