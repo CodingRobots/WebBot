@@ -92,6 +92,17 @@ class RootController(BaseController):
         return dict(robot_infos=robots, bullets=bullets, explosions=explosions,
                     walls=walls, time=time)
 
+    @expose()
+    def store(self, value):
+        import memcache
+        mc = memcache.Client(['127.0.0.1:11211'])
+        return dict(cached=mc.set('key', value))
+
+    @expose('json')
+    def cached(self):
+        import memcache
+        mc = memcache.Client(['127.0.0.1:11211'])
+        return dict(cached=mc.get('key'))
 
     @expose('webbot.templates.environ')
     def environ(self):
