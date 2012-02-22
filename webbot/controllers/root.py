@@ -12,7 +12,7 @@ from tgext.admin.controller import AdminController
 
 from webbot.lib.base import BaseController
 from webbot.controllers.error import ErrorController
-from random import random
+from random import randrange
 
 __all__ = ['RootController']
 
@@ -60,28 +60,28 @@ class RootController(BaseController):
         #   (x, y, robot_orientation, turret_orientation)
         # format
         robots = [{'name': 'robo1',
-                   'health': random()*101,
-                   'loc': (random()*601, random()*501, random()*361, random()*361),
+                   'health': randrange(101),
+                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
                    },
                   {'name': 'robo2',
-                   'health': random()*101,
-                   'loc': (random()*601, random()*501, random()*361, random()*361),
+                   'health': randrange(101),
+                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
                    },
                    {'name': 'robo3',
-                   'health': random()*101,
-                   'loc': (random()*601, random()*501, random()*361, random()*361),
+                   'health': randrange(101),
+                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
                    },
                    {'name': 'robo4',
-                   'health': random()*101,
-                   'loc': (random()*601, random()*501, random()*361, random()*361),
+                   'health': randrange(101),
+                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
                    },
                    {'name': 'robo5',
-                   'health': random()*101,
-                   'loc': (random()*601, random()*501, random()*361, random()*361),
+                   'health': randrange(101),
+                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
                    },
                   ]
-        bullets = [{'loc': (random()*601, random()*501)},
-                   {'loc': (random()*601, random()*501)},
+        bullets = [{'loc': (randrange(601), randrange(501))},
+                   {'loc': (randrange(601), randrange(501))},
                    ]
         explosions = [{'loc': (30, 50), 'size': 3},
                       {'loc': (70, 30), 'size': 5},
