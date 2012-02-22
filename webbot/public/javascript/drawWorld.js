@@ -1,4 +1,4 @@
-$(document).ready(function(){
+function read_json(){
     $.getJSON('/robo_data?game_id=1', function(data) {
         //clear the canvas
         $("canvas").clearCanvas();
@@ -63,4 +63,7 @@ $(document).ready(function(){
             });
         });
     });
-});
+};
+
+
+$(document).ready(setInterval("read_json()", 100));

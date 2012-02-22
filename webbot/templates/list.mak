@@ -6,7 +6,7 @@
   %for robot in robots:
     <div>
 	  <span>${robot} Robot</span>
-	  <input type='button'>Pick Me!</img>
+	  <input type='button' value='Pick Me!'/>
     </div>
   %endfor
 </div>
