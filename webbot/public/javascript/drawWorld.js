@@ -1,4 +1,4 @@
-$(document).ready(function(){
+function read_json(){
     $.getJSON('/robo_data?game_id=1', function(data) {
         // Handle the robots
         $.each(data.robot_infos, function(index,value){
@@ -41,4 +41,7 @@ $(document).ready(function(){
             });
         });
     });
-});
+};
+
+
+$(document).ready(setInterval("read_json()", 100));
