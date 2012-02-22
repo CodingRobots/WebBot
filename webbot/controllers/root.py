@@ -12,6 +12,7 @@ from tgext.admin.controller import AdminController
 
 from webbot.lib.base import BaseController
 from webbot.controllers.error import ErrorController
+from random import random
 
 __all__ = ['RootController']
 
@@ -59,28 +60,28 @@ class RootController(BaseController):
         #   (x, y, robot_orientation, turret_orientation)
         # format
         robots = [{'name': 'robo1',
-                   'health': 100,
-                   'loc': (5, 5, 1, 2),
+                   'health': random()*101,
+                   'loc': (random()*601, random()*501, random()*361, random()*361),
                    },
                   {'name': 'robo2',
-                   'health': 25,
-                   'loc': (5, 5, 1, 2),
+                   'health': random()*101,
+                   'loc': (random()*601, random()*501, random()*361, random()*361),
                    },
-                  {'name': 'robo3',
-                   'health': 30,
-                   'loc': (5, 5, 1, 2),
+                   {'name': 'robo3',
+                   'health': random()*101,
+                   'loc': (random()*601, random()*501, random()*361, random()*361),
                    },
-                  {'name': 'robo4',
-                   'health': 70,
-                   'loc': (5, 5, 1, 2),
+                   {'name': 'robo4',
+                   'health': random()*101,
+                   'loc': (random()*601, random()*501, random()*361, random()*361),
                    },
-                  {'name': 'robo5',
-                   'health': 65,
-                   'loc': (5, 5, 1, 2),
+                   {'name': 'robo5',
+                   'health': random()*101,
+                   'loc': (random()*601, random()*501, random()*361, random()*361),
                    },
                   ]
-        bullets = [{'loc': (5, 5)},
-                   {'loc': (5, 10)},
+        bullets = [{'loc': (random()*601, random()*501)},
+                   {'loc': (random()*601, random()*501)},
                    ]
         explosions = [{'loc': (30, 50), 'size': 3},
                       {'loc': (70, 30), 'size': 5},
