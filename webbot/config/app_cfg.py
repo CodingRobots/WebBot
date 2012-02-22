@@ -13,13 +13,35 @@ convert them into boolean, for example, you should use the
  
 """
 
+import os
+
 from tg.configuration import AppConfig
+from pylons import config
 
 import webbot
 from webbot import model
 from webbot.lib import app_globals, helpers 
 
-base_config = AppConfig()
+class OpenShiftConfig(AppConfig):
+
+    def after_init_config(self):
+        if os.environ.get('OPENSHIFT_APP_NAME'):
+            self.sa_auth.cookie_secret = os.environ['OPENSHIFT_APP_UUID']
+            config['cookie_secret'] = os.environ['OPENSHIFT_APP_UUID']
+            config['beaker.session.secret'] = os.environ['OPENSHIFT_APP_UUID']
+            config['cache_dir'] = os.environ['OPENSHIFT_DATA_DIR']
+            config['beaker.session.key'] = os.environ['OPENSHIFT_APP_NAME']
+            config['beaker.cache.data_dir'] = \
+                    os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'cache')
+            config['beaker.session.data_dir'] = \
+                    os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'sessions')
+            config['templating.mako.compiled_templates_dir'] = \
+                    os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'templates')
+            if os.environ.get('OPENSHIFT_DB_URL'):
+                config['sqlalchemy.url'] = \
+                    '%(OPENSHIFT_DB_URL)s%(OPENSHIFT_APP_NAME)s' % os.environ
+
+base_config = OpenShiftConfig()
 base_config.renderers = []
 
 base_config.package = webbot
