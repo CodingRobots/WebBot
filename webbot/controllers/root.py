@@ -50,7 +50,8 @@ class RootController(BaseController):
     @expose('webbot.templates.list')
     def robots(self):
         """List all the available robots."""
-        robo_list = ['Ninja', 'Pirate', 'Robot', 'Wizard', 'Velociraptor', 'Robot']
+        robo_list = [u'Ninja', u'Pirate', u'Robot', u'Wizard', u'Velociraptor',
+                     u'Ninja2', u'Pirate2', u'Robot2', u'Wizard2']
         return dict(robots=robo_list)
 
     @expose('webbot.templates.gamelist')
@@ -58,7 +59,6 @@ class RootController(BaseController):
         """List all the available games."""
         game_list = [{'name': 'Ninja', 'id': '1234'},
                      {'name': 'Pirate', 'id': '1234'},
-                     {'name': 'Robot', 'id': '1234'},
                      {'name': 'Wizard', 'id': '1234'},
                      {'name': 'Velociraptor', 'id': '1234'},
                      {'name': 'Robot', 'id': '1234'},
