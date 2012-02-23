@@ -59,7 +59,7 @@
   <ul id="mainmenu">
     <li class="first"><a href="${tg.url('/')}" class="${('', 'active')[page=='index']}">Welcome</a></li>
         <li><a href="${tg.url('/robots')}" class="${('', 'active')}">Robots!</a></li>
-        <li><a href="${tg.url('/game%s' % ('?id=%s' % game_id if game_id else ''))}" class="${('', 'active')}">Game</a></li>
+        <li><a href="${tg.url('/games')}" class="${('', 'active')}">Games</a></li>
 
     % if tg.auth_stack_enabled:
       <span>

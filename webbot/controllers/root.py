@@ -53,6 +53,18 @@ class RootController(BaseController):
         robo_list = ['Ninja', 'Pirate', 'Robot', 'Wizard', 'Velociraptor', 'Robot']
         return dict(robots=robo_list)
 
+    @expose('webbot.templates.gamelist')
+    def games(self):
+        """List all the available games."""
+        game_list = [{'name': 'Ninja', 'id': '1234'},
+                     {'name': 'Pirate', 'id': '1234'},
+                     {'name': 'Robot', 'id': '1234'},
+                     {'name': 'Wizard', 'id': '1234'},
+                     {'name': 'Velociraptor', 'id': '1234'},
+                     {'name': 'Robot', 'id': '1234'},
+                    ]
+        return dict(games=game_list)
+
     @expose('json')
     def robo_data(self, game_id):
         """Returns the current state of the game as JSON."""
