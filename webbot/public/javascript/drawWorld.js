@@ -42,7 +42,7 @@ function read_json(){
         $.each(data.walls, function(index,value){
             var location = value.loc;
             var w = h = 0;
-            if (value.direction = 'v'){
+            if (value.direction == 'v'){
                 h = value.length;
                 w = 10;
             }else{
