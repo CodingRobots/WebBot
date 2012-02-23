@@ -72,4 +72,4 @@ function read_json(){
 };
 
 
-$(document).ready(setInterval("read_json()", 100));
+$(document).ready(setInterval("read_json()", 500));

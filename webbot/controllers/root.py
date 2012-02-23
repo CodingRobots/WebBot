@@ -13,6 +13,9 @@ from tgext.admin.controller import AdminController
 from webbot.lib.base import BaseController
 from webbot.controllers.error import ErrorController
 from random import randrange
+import subprocess
+import uuid
+from time import clock
 
 __all__ = ['RootController']
 
@@ -152,6 +155,15 @@ class RootController(BaseController):
             flash(_('Wrong credentials'), 'warning')
         return dict(page='login', login_counter=str(login_counter),
                     came_from=came_from)
+
+    @expose()
+    def start_game(self, **kwargs):
+        robots = ''
+        for key in kwargs.keys(): robots += key + ' '
+        robots = robots[:-1]
+        game_id = uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock()))
+        subprocess.call(['python', '/home/trose/Code/CodingRobots/main.py', '-g', '-I', str(game_id), '-R', robots], cwd='/home/trose/Code/CodingRobots/')
+        redirect('/game?game_id=%s' % (game_id))
 
     @expose()
     def post_login(self, came_from=lurl('/')):
