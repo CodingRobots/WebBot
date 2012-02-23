@@ -89,7 +89,7 @@ class RootController(BaseController):
         walls = [{'loc': (1, 1), 'length': 100, 'direction': 'v'},
                  {'loc': (1, 1), 'length': 100, 'direction': 'h'},
                  ]
-        time = 'x:xx'
+        time = randrange(101)
         return dict(robot_infos=robots, bullets=bullets, explosions=explosions,
                     walls=walls, time=time)
 
