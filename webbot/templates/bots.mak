@@ -6,16 +6,6 @@
 <script src="/javascript/jCanvas.js" type="text/javascript"></script>
 <script src="/javascript/drawWorld.js" type="text/javascript"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript"></script>
-<script>
-	%for index, robot in enumerate(robot_infos):
-		$(function() {
-			$( "#pb${index}" ).progressbar({
-				value: 100
-			});
-		});
-	%endfor
-</script>
-
 
 <div id='canvas_box'>
   <canvas height=500 width=600/>
@@ -30,7 +20,7 @@
     </div>
   %endfor
   <div>
-    <h2>Time Remaining: <span id='timeleft'>X:XX</span></h2>
+    <h2>Time Remaining: <span id='timeleft'></span></h2>
   </div>
 </div>
 <div style="clear:both"/>

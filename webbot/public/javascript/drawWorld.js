@@ -3,6 +3,8 @@ function read_json(){
         //clear the canvas
         $("canvas").clearCanvas();
         
+        $("#timeleft").text(data.time);
+        
         // Handle the robots
         $.each(data.robot_infos, function(index,value){
             var location = value.loc;
@@ -23,6 +25,10 @@ function read_json(){
                 fromCenter: false,
                 angle: location[3],
             });
+            $( "#pb" + index ).progressbar({
+                value: value.health
+            });
+            
         });
         $.each(data.bullets, function(index,value){
             var location = value.loc;
