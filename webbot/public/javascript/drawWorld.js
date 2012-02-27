@@ -2,9 +2,9 @@ function read_json(){
     $.getJSON('/robo_data?game_id=1', function(data) {
         //clear the canvas
         $("canvas").clearCanvas();
-        
+
         $("#timeleft").text(data.time);
-        
+
         // Handle the robots
         $.each(data.robot_infos, function(index,value){
             var location = value.loc;
@@ -28,7 +28,7 @@ function read_json(){
             $( "#pb" + index ).progressbar({
                 value: value.health
             });
-            
+
         });
         $.each(data.bullets, function(index,value){
             var location = value.loc;
@@ -72,4 +72,4 @@ function read_json(){
 };
 
 
-$(document).ready(setInterval("read_json()", 500));
+$(document).ready(setInterval("read_json()", 100));

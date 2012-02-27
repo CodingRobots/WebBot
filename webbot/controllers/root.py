@@ -74,39 +74,9 @@ class RootController(BaseController):
         # loc is the current location of the robot in
         #   (x, y, robot_orientation, turret_orientation)
         # format
-        robots = [{'name': 'robo1',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                  {'name': 'robo2',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                   {'name': 'robo3',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                   {'name': 'robo4',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                   {'name': 'robo5',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                  ]
-        bullets = [{'loc': (randrange(601), randrange(501))},
-                   {'loc': (randrange(601), randrange(501))},
-                   ]
-        explosions = [{'loc': (30, 50), 'size': 3},
-                      {'loc': (70, 30), 'size': 5},
-                      ]
-        walls = [{'loc': (1, 1), 'length': randrange(500), 'direction': 'v'},
-                 {'loc': (1, 1), 'length': randrange(500), 'direction': 'h'},
-                 ]
-        time = randrange(101)
-        return dict(robot_infos=robots, bullets=bullets, explosions=explosions,
-                    walls=walls, time=time)
+        import memcache
+        mc = memcache.Client(['127.0.0.1:11211'])
+        return mc.get(game_id)
 
     @expose()
     def store(self, value):
@@ -162,7 +132,7 @@ class RootController(BaseController):
         for key in kwargs.keys(): robots += key + ' '
         robots = robots[:-1]
         game_id = uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock()))
-        subprocess.call(['python', '/home/trose/Code/CodingRobots/main.py', '-g', '-I', str(game_id), '-R', robots], cwd='/home/trose/Code/CodingRobots/')
+        subprocess.Popen(['python', '../CodingRobots/main.py', '-g', '-I', str(game_id), '-R', robots], cwd='../CodingRobots')
         redirect('/game?game_id=%s' % (game_id))
 
     @expose()
