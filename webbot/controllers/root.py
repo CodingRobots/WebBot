@@ -105,11 +105,13 @@ class RootController(BaseController):
         return dict(robot_infos=robots, bullets=bullets, explosions=explosions,
                     walls=walls, time=time)
 
-    @expose()
+    @expose('json')
     def store(self, value):
         import memcache
         mc = memcache.Client(['127.0.0.1:11211'])
-        return dict(cached=mc.set('key', value))
+        mc.set('key', value)
+        cached=mc.get(value)
+        return dict(cached=cached)
 
     @expose('json')
     def cached(self):
