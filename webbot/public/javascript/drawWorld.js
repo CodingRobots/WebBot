@@ -7,23 +7,25 @@ function read_json(game_id){
 
         // Handle the robots
         $.each(data.robots, function(index,value){
-            var location = value.position;
+            var location = value.position,
+                x_coord = location[0] * 5,
+                y_coord = location[1] * 6;
             $("canvas")
             .drawImage({
                 source: '/images/r0' + (index + 1) + '.png',
-                x: location[0], y: location[1],
+                x: x_coord, y: y_coord,
                 width: 32,
                 height: 32,
-                fromCenter: false,
+                fromCenter: true,
                 angle: value.rotation,
             })
             .drawImage({
                 source: '/images/turret.png',
-                x: location[0], y: location[1],
+                x: x_coord, y: y_coord,
                 width: 32,
                 height: 32,
-                fromCenter: false,
-                angle: value.turret_angle,
+                fromCenter: true,
+                angle: value.rotation + value.turret_angle,
             });
             $( "#pb" + index ).progressbar({
                 value: value.health
@@ -31,12 +33,14 @@ function read_json(game_id){
 
         });
         $.each(data.bullets, function(index,value){
-            var location = value.position;
+            var location = value.position,
+                x_coord = location[0] * 5,
+                y_coord = location[1] * 6;
             $("canvas")
             .drawArc({
                 fillStyle: "#000",
-                x: location[0], y: location[1],
-                radius: 1
+                x: x_coord, y: y_coord,
+                radius: 1 + (5*value.exploding)
             });
         });
         $.each(data.walls, function(index,value){
@@ -56,16 +60,6 @@ function read_json(game_id){
                 width: w,
                 height: h,
                 fromCenter: false
-            });
-        });
-        $.each(data.explosions, function(index,value){
-            var location = value.position;
-            var size = value.size;
-            $("canvas")
-            .drawArc({
-                fillStyle: "#ff0000",
-                x: location[0], y: location[1],
-                radius: 10
             });
         });
     });
