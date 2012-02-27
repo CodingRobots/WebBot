@@ -133,8 +133,9 @@ class RootController(BaseController):
         robots = ''
         for key in kwargs.keys(): robots += key + ' '
         robots = robots[:-1]
-        game_id = uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock()))
-        subprocess.Popen(['python', '../../pybotwar/main.py', '-g', '-I', str(game_id), '-R', robots], cwd='../../pybotwar')
+        game_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock())))
+        subprocess.Popen(['python', '../../pybotwar/main.py', '-g', '-I', game_id, '-R', robots], cwd='../../pybotwar')
+
         redirect('/game?game_id=%s' % (game_id))
 
     @expose()
