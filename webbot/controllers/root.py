@@ -46,8 +46,7 @@ class RootController(BaseController):
 
     @expose('webbot.templates.bots')
     def game(self, game_id=''):
-        """Handle the 'about' page."""
-        game_id='1234567890'
+        """Handle displaying the game."""
         return dict(game_id=game_id, robot_infos=self.robo_data(game_id))
 
     @expose('webbot.templates.list')
