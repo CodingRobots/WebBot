@@ -76,7 +76,7 @@ class RootController(BaseController):
         # format
         import memcache
         mc = memcache.Client(['127.0.0.1:11211'])
-        return mc.get(game_id)
+        return mc.get(game_id.encode('ascii'))
 
     @expose('json')
     def store(self, value):
