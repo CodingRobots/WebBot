@@ -1,13 +1,13 @@
-function read_json(){
-    $.getJSON('/robo_data?game_id=1', function(data) {
+function read_json(game_id){
+    $.getJSON('/robo_data?game_id=' + game_id, function(data) {
         //clear the canvas
         $("canvas").clearCanvas();
-        
+        console.log(data);
         $("#timeleft").text(data.time);
-        
+
         // Handle the robots
-        $.each(data.robot_infos, function(index,value){
-            var location = value.loc;
+        $.each(data.robots, function(index,value){
+            var location = value.position;
             $("canvas")
             .drawImage({
                 source: '/images/r0' + (index + 1) + '.png',
@@ -15,7 +15,7 @@ function read_json(){
                 width: 32,
                 height: 32,
                 fromCenter: false,
-                angle: location[2],
+                angle: value.rotation,
             })
             .drawImage({
                 source: '/images/turret.png',
@@ -23,15 +23,15 @@ function read_json(){
                 width: 32,
                 height: 32,
                 fromCenter: false,
-                angle: location[3],
+                angle: value.turret_angle,
             });
             $( "#pb" + index ).progressbar({
                 value: value.health
             });
-            
+
         });
         $.each(data.bullets, function(index,value){
-            var location = value.loc;
+            var location = value.position;
             $("canvas")
             .drawArc({
                 fillStyle: "#000",
@@ -40,7 +40,7 @@ function read_json(){
             });
         });
         $.each(data.walls, function(index,value){
-            var location = value.loc;
+            var location = value.position;
             var w = h = 0;
             if (value.direction == 'v'){
                 h = value.length;
@@ -59,7 +59,7 @@ function read_json(){
             });
         });
         $.each(data.explosions, function(index,value){
-            var location = value.loc;
+            var location = value.position;
             var size = value.size;
             $("canvas")
             .drawArc({
@@ -70,6 +70,3 @@ function read_json(){
         });
     });
 };
-
-
-$(document).ready(setInterval("read_json()", 100));

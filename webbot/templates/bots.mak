@@ -7,16 +7,20 @@
 <script src="/javascript/drawWorld.js" type="text/javascript"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript"></script>
 
+<script>
+    $(document).ready(setInterval("read_json(\"${game_id}\")", 100));
+</script>
+
 <div id='canvas_box'>
   <canvas height=500 width=600/>
 </div>
 <div id='bots_box'>
   <h1>WebBotWar</h1>
-  %for index, robot in enumerate(robot_infos):
+  %for index, robot in enumerate(robot_infos['robots']):
     <div id='robo_info_${index}' class='robo_info'>
-	  <span class='name'>Robot ${index}</span>
-	  <img src='images/r0${'%d' % (index+1)}.png'></img>
-	  <div class='progbar' id="pb${index}"></div>
+      <span class='name'>Robot ${index}</span>
+      <img src='images/r0${'%d' % (index+1)}.png'></img>
+      <div class='progbar' id="pb${index}"></div>
     </div>
   %endfor
   <div>

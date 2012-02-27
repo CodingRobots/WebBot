@@ -13,6 +13,10 @@ from tgext.admin.controller import AdminController
 from webbot.lib.base import BaseController
 from webbot.controllers.error import ErrorController
 from random import randrange
+import subprocess
+import uuid
+from time import clock, sleep
+import json
 
 __all__ = ['RootController']
 
@@ -43,9 +47,8 @@ class RootController(BaseController):
 
     @expose('webbot.templates.bots')
     def game(self, game_id=''):
-        """Handle the 'about' page."""
-        game_id='1234567890'
-        return dict(game_id=id, robot_infos=self.robo_data(id))
+        """Handle displaying the game."""
+        return dict(game_id=game_id, robot_infos=self.robo_data(game_id))
 
     @expose('webbot.templates.list')
     def robots(self):
@@ -57,12 +60,9 @@ class RootController(BaseController):
     @expose('webbot.templates.gamelist')
     def games(self):
         """List all the available games."""
-        game_list = [{'name': 'Ninja', 'id': '1234'},
-                     {'name': 'Pirate', 'id': '1234'},
-                     {'name': 'Wizard', 'id': '1234'},
-                     {'name': 'Velociraptor', 'id': '1234'},
-                     {'name': 'Robot', 'id': '1234'},
-                    ]
+        import memcache
+        mc = memcache.Client(['127.0.0.1:11211'])
+        game_list = mc.get('games') or []
         return dict(games=game_list)
 
     @expose('json')
@@ -71,45 +71,17 @@ class RootController(BaseController):
         # loc is the current location of the robot in
         #   (x, y, robot_orientation, turret_orientation)
         # format
-        robots = [{'name': 'robo1',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                  {'name': 'robo2',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                   {'name': 'robo3',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                   {'name': 'robo4',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                   {'name': 'robo5',
-                   'health': randrange(101),
-                   'loc': (randrange(601), randrange(501), randrange(361), randrange(361)),
-                   },
-                  ]
-        bullets = [{'loc': (randrange(601), randrange(501))},
-                   {'loc': (randrange(601), randrange(501))},
-                   ]
-        explosions = [{'loc': (30, 50), 'size': 3},
-                      {'loc': (70, 30), 'size': 5},
-                      ]
-        walls = [{'loc': (1, 1), 'length': randrange(500), 'direction': 'v'},
-                 {'loc': (1, 1), 'length': randrange(500), 'direction': 'h'},
-                 ]
-        time = randrange(101)
-        return dict(robot_infos=robots, bullets=bullets, explosions=explosions,
-                    walls=walls, time=time)
+        import memcache
+        mc = memcache.Client(['127.0.0.1:11211'])
+        return json.loads(mc.get(game_id.encode('ascii')))
 
-    @expose()
+    @expose('json')
     def store(self, value):
         import memcache
         mc = memcache.Client(['127.0.0.1:11211'])
-        return dict(cached=mc.set('key', value))
+        mc.set('key', value)
+        cached=mc.get(value)
+        return dict(cached=cached)
 
     @expose('json')
     def cached(self):
@@ -152,6 +124,22 @@ class RootController(BaseController):
             flash(_('Wrong credentials'), 'warning')
         return dict(page='login', login_counter=str(login_counter),
                     came_from=came_from)
+
+    @expose()
+    def start_game(self, **kwargs):
+        import memcache
+        robots = ''
+        for key in kwargs.keys(): robots += key + ' '
+        robots = robots[:-1]
+        game_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock())))
+        subprocess.Popen(['python', 'main.py', '-g', '-I', game_id, '-R', robots], cwd='../../pybotwar')
+
+        mc = memcache.Client(['127.0.0.1:11211'])
+        games = mc.get('games') or []
+        games.append(dict(name=robots, id=game_id))
+        mc.set('games', games)
+        sleep(.2)
+        redirect('/game?game_id=%s' % (game_id))
 
     @expose()
     def post_login(self, came_from=lurl('/')):
