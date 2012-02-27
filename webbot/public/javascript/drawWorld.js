@@ -1,8 +1,8 @@
-function read_json(){
-    $.getJSON('/robo_data?game_id=1', function(data) {
+function read_json(game_id){
+    $.getJSON('/robo_data?game_id=' + game_id, function(data) {
         //clear the canvas
         $("canvas").clearCanvas();
-
+        console.log(data);
         $("#timeleft").text(data.time);
 
         // Handle the robots
@@ -70,6 +70,3 @@ function read_json(){
         });
     });
 };
-
-
-$(document).ready(setInterval("read_json()", 100));
