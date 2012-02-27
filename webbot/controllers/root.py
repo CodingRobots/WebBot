@@ -130,11 +130,17 @@ class RootController(BaseController):
 
     @expose()
     def start_game(self, **kwargs):
+        import memcache
         robots = ''
         for key in kwargs.keys(): robots += key + ' '
         robots = robots[:-1]
         game_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock())))
         subprocess.Popen(['python', '../../pybotwar/main.py', '-g', '-I', game_id, '-R', robots], cwd='../../pybotwar')
+
+        mc = memcache.Client(['127.0.0.1:11211'])
+        games = mc.get('games') or []
+        games.append(dict(name=robots, id=game_id))
+        mc.set('games', games)
 
         redirect('/game?game_id=%s' % (game_id))
 
