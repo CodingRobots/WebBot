@@ -60,12 +60,9 @@ class RootController(BaseController):
     @expose('webbot.templates.gamelist')
     def games(self):
         """List all the available games."""
-        game_list = [{'name': 'Ninja', 'id': '1234'},
-                     {'name': 'Pirate', 'id': '1234'},
-                     {'name': 'Wizard', 'id': '1234'},
-                     {'name': 'Velociraptor', 'id': '1234'},
-                     {'name': 'Robot', 'id': '1234'},
-                    ]
+        import memcache
+        mc = memcache.Client(['127.0.0.1:11211'])
+        game_list = mc.get('games') or []
         return dict(games=game_list)
 
     @expose('json')
