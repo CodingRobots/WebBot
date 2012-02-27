@@ -8,8 +8,8 @@ function read_json(game_id){
         // Handle the robots
         $.each(data.robots, function(index,value){
             var location = value.position,
-                x_coord = location[0] * 5,
-                y_coord = location[1] * 6;
+                x_coord = location[0] * 6,
+                y_coord = location[1] * 5;
             $("canvas")
             .drawImage({
                 source: '/images/r0' + (index + 1) + '.png',
@@ -34,8 +34,8 @@ function read_json(game_id){
         });
         $.each(data.bullets, function(index,value){
             var location = value.position,
-                x_coord = location[0] * 5,
-                y_coord = location[1] * 6;
+                x_coord = location[0] * 6,
+                y_coord = location[1] * 5;
             $("canvas")
             .drawArc({
                 fillStyle: "#000",
@@ -44,22 +44,16 @@ function read_json(game_id){
             });
         });
         $.each(data.walls, function(index,value){
-            var location = value.position;
-            var w = h = 0;
-            if (value.direction == 'v'){
-                h = value.length;
-                w = 10;
-            }else{
-                w = value.length;
-                h = 10;
-            }
+            var location = value.position,
+                x_coord = location[0] * 6,
+                y_coord = location[1] * 5;
             $("canvas")
             .drawRect({
                 fillStyle: "#000",
-                x: location[0], y: location[1],
-                width: w,
-                height: h,
-                fromCenter: false
+                x: x_coord, y: y_coord,
+                width: value.width * 6,
+                height: value.height * 5,
+                fromCenter: true
             });
         });
     });
