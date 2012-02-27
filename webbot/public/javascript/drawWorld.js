@@ -1,8 +1,15 @@
+interval = undefined;
+
 function read_json(game_id){
     $.getJSON('/robo_data?game_id=' + game_id, function(data) {
         //clear the canvas
         $("canvas").clearCanvas();
-        $("#timeleft").text(data.time);
+
+        if (data.time < 0) {
+            clearInterval(interval);
+        }else{
+            $("#timeleft").text(data.time);
+        }
 
         // Handle the robots
         $.each(data.robots, function(index,value){
