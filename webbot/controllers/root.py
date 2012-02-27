@@ -16,6 +16,7 @@ from random import randrange
 import subprocess
 import uuid
 from time import clock
+import json
 
 __all__ = ['RootController']
 
@@ -72,7 +73,7 @@ class RootController(BaseController):
         # format
         import memcache
         mc = memcache.Client(['127.0.0.1:11211'])
-        return mc.get(game_id.encode('ascii'))
+        return json.loads(mc.get(game_id.encode('ascii')))
 
     @expose('json')
     def store(self, value):

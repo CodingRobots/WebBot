@@ -12,7 +12,7 @@
 </div>
 <div id='bots_box'>
   <h1>WebBotWar</h1>
-  %for index, robot in enumerate(robot_infos):
+  %for index, robot in enumerate(robot_infos['robots']):
     <div id='robo_info_${index}' class='robo_info'>
 	  <span class='name'>Robot ${index}</span>
 	  <img src='images/r0${'%d' % (index+1)}.png'></img>
