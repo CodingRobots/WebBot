@@ -6,8 +6,8 @@ function read_json(game_id){
         $("#timeleft").text(data.time);
 
         // Handle the robots
-        $.each(data.robot_infos, function(index,value){
-            var location = value.loc;
+        $.each(data.robots, function(index,value){
+            var location = value.position;
             $("canvas")
             .drawImage({
                 source: '/images/r0' + (index + 1) + '.png',
@@ -15,7 +15,7 @@ function read_json(game_id){
                 width: 32,
                 height: 32,
                 fromCenter: false,
-                angle: location[2],
+                angle: value.rotation,
             })
             .drawImage({
                 source: '/images/turret.png',
@@ -23,7 +23,7 @@ function read_json(game_id){
                 width: 32,
                 height: 32,
                 fromCenter: false,
-                angle: location[3],
+                angle: value.turret_angle,
             });
             $( "#pb" + index ).progressbar({
                 value: value.health
@@ -31,7 +31,7 @@ function read_json(game_id){
 
         });
         $.each(data.bullets, function(index,value){
-            var location = value.loc;
+            var location = value.position;
             $("canvas")
             .drawArc({
                 fillStyle: "#000",
@@ -40,7 +40,7 @@ function read_json(game_id){
             });
         });
         $.each(data.walls, function(index,value){
-            var location = value.loc;
+            var location = value.position;
             var w = h = 0;
             if (value.direction == 'v'){
                 h = value.length;
@@ -59,7 +59,7 @@ function read_json(game_id){
             });
         });
         $.each(data.explosions, function(index,value){
-            var location = value.loc;
+            var location = value.position;
             var size = value.size;
             $("canvas")
             .drawArc({

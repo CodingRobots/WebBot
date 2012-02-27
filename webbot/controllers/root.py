@@ -15,7 +15,7 @@ from webbot.controllers.error import ErrorController
 from random import randrange
 import subprocess
 import uuid
-from time import clock
+from time import clock, sleep
 import json
 
 __all__ = ['RootController']
@@ -138,7 +138,7 @@ class RootController(BaseController):
         games = mc.get('games') or []
         games.append(dict(name=robots, id=game_id))
         mc.set('games', games)
-
+        sleep(.2)
         redirect('/game?game_id=%s' % (game_id))
 
     @expose()
