@@ -138,7 +138,7 @@ class RootController(BaseController):
         games = mc.get('games') or []
         games.append(dict(name=robots, id=game_id))
         mc.set('games', games)
-        sleep(.2)
+        sleep(1)
         redirect('/game?game_id=%s' % (game_id))
 
     @expose()

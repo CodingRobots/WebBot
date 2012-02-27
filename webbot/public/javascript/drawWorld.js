@@ -2,11 +2,19 @@ function read_json(game_id){
     $.getJSON('/robo_data?game_id=' + game_id, function(data) {
         //clear the canvas
         $("canvas").clearCanvas();
-        console.log(data);
         $("#timeleft").text(data.time);
 
         // Handle the robots
         $.each(data.robots, function(index,value){
+            $( "#pb" + index ).progressbar({
+                value: value.health
+            });
+
+            $('#robo_info_' + index + ' .name').text(value.name);
+
+            if (value.health <= 0){
+                return;
+            }
             var location = value.position,
                 x_coord = location[0] * 6,
                 y_coord = location[1] * 5;
@@ -27,10 +35,6 @@ function read_json(game_id){
                 fromCenter: true,
                 angle: value.rotation + value.turret_angle,
             });
-            $( "#pb" + index ).progressbar({
-                value: value.health
-            });
-
         });
         $.each(data.bullets, function(index,value){
             var location = value.position,
