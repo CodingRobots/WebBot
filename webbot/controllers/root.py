@@ -77,12 +77,9 @@ class RootController(BaseController):
             user = query.one()
 
         user.access_token = access_token
-        user.last_seen = datetime.now()
-
         log_message("%s logged in" % user.name)
 
-        redirect(url('/waiting/{name}#access_token={token}'.format(
-            name=user.name, token=user.access_token)))
+        redirect(url('/'))
 
     @expose('json')
     @expose('tg2app.templates.waiting', content_type='text/html')
