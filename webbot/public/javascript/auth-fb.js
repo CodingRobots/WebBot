@@ -46,7 +46,7 @@
 
   check_auth = function() {
     var access_token;
-    if (window.location.href.indexOf('waiting') !== -1) return;
+//    if (window.location.href.indexOf('waiting') !== -1) return;
     if (window.location.hash.length === 0) {
       return force_login();
     } else {
