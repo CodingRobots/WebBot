@@ -14,8 +14,15 @@ from webbot.lib.base import BaseController
 from webbot.controllers.error import ErrorController
 from random import random
 
+from sqlalchemy import desc
+from datetime import datetime, timedelta
+import random
+
 __all__ = ['RootController']
 
+# Add this function OUTSIDE of the RootController
+def log_message(msg):
+    model.DBSession.add(model.Message(msg=msg))
 
 class RootController(BaseController):
     """
@@ -35,6 +42,69 @@ class RootController(BaseController):
     admin = AdminController(model, DBSession, config_type=TGAdminConfig)
 
     error = ErrorController()
+
+    # Add these methods INSIDE the RootController
+    @expose()
+    def do_logout(self, name):
+        query = model.Login.query.filter_by(name=name)
+        
+        if query.count() == 0:
+            # wtf...  when would this happen?
+            log_message("'%s' (who DNE) tried to logout." % name)
+            redirect('http://ritfloss.rtfd.org/')
+        
+        user = query.first()
+        log_message("'%s' logged out." % user.name)
+        model.DBSession.delete(user)
+        redirect('http://ritfloss.rtfd.org/')
+
+    @expose()
+    def do_login(self, name, access_token):
+    
+        query = model.Login.query.filter_by(name=name)
+        
+        if query.count() == 0:
+            user = model.Login(name=name)
+            model.DBSession.add(user)
+        elif query.count() > 1:
+            # wtf...  when would this happen?
+            user = query.first()
+        else:
+            user = query.one()
+
+        user.access_token = access_token
+        user.last_seen = datetime.now()
+
+        log_message("%s logged in" % user.name)
+
+        redirect(url('/waiting/{name}#access_token={token}'.format(
+            name=user.name, token=user.access_token)))
+
+    @expose('json')
+    @expose('tg2app.templates.waiting', content_type='text/html')
+    def waiting(self, name):
+        users = model.Login.query.all()
+        def prune_idle(user):
+            if datetime.now() - user.last_seen > timedelta(minutes=10):
+                log_message("%s went idle.  Logging out." % user.name)
+                model.DBSession.delete(user)
+                return False
+            return True
+
+        users = filter(prune_idle, users)
+
+        if name not in [user.name for user in users]:
+            log_message("'%s' tried unauthorized access." % name)
+            redirect('/')
+
+        messages = model.Message.query\
+                .order_by(desc(model.Message.created_on))\
+                .limit(7).all()
+
+        return {
+            'users':[user.__json__() for user in users],
+            'messages':[msg.__json__() for msg in messages],
+        }
 
     @expose('webbot.templates.index')
     def index(self):
