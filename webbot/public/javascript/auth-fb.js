@@ -40,20 +40,18 @@
       redirect_uri: window.location.href,
       response_type: 'token'
     });
-    setCookie(query);
     url = path + query;
+    setCookie("auth_cookie",query);
     return window.location = url;
   };
 
   check_auth = function()
   {
-    console.log(access_token);
-    console.log(good_token);
-    access_token = getCookie(good_token);
-    console.log(access_token);
+    access_token = getCookie("auth_cookie");
     if(access_token != null && access_token != "")
     {
-        good_token = window.location.hash.substring(14).split('&')[0];
+        good_token = access_token;
+//        good_token = window.location.hash.substring(14).split('&')[0];
         return act_on_login(good_token);
     }
     else
@@ -64,11 +62,7 @@
 
   setCookie = function(c_name,value)
   {
-    var exdate=new Date();
-    //turn into hours
-    exdate.setDate(exdate.getHours() + 1);
-    var c_value=escape(value) ? "" : "; expires="+exdate.toUTCString();
-    document.cookie=c_name + "=" + c_value;
+    document.cookie=c_name + "=" + value;
   };
 
   getCookie = function(c_name)
