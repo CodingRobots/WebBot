@@ -64,7 +64,6 @@ class RootController(BaseController):
 
     @expose()
     def do_login(self, name, access_token):
-	print("test")    
         query = model.Login.query.filter_by(name=name)
         
         if query.count() == 0:
@@ -77,35 +76,9 @@ class RootController(BaseController):
             user = query.one()
 
         user.access_token = access_token
-        log_message("%s logged in" % user.name)
+#        log_message("%s logged in" % user.name)
 
         redirect(url('/'))
-
-    @expose('json')
-    @expose('tg2app.templates.waiting', content_type='text/html')
-    def waiting(self, name):
-        users = model.Login.query.all()
-        def prune_idle(user):
-            if datetime.now() - user.last_seen > timedelta(minutes=10):
-                log_message("%s went idle.  Logging out." % user.name)
-                model.DBSession.delete(user)
-                return False
-            return True
-
-        users = filter(prune_idle, users)
-
-        if name not in [user.name for user in users]:
-            log_message("'%s' tried unauthorized access." % name)
-            redirect('/')
-
-        messages = model.Message.query\
-                .order_by(desc(model.Message.created_on))\
-                .limit(7).all()
-
-        return {
-            'users':[user.__json__() for user in users],
-            'messages':[msg.__json__() for msg in messages],
-        }
 
     @expose('webbot.templates.index')
     def index(self):

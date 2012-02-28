@@ -9,7 +9,7 @@ from sqlalchemy.types import Integer, Unicode, DateTime
 
 from datetime import datetime
 
-from tg2app.model import DeclarativeBase, metadata, DBSession
+from webbot.model import DeclarativeBase, metadata, DBSession
 
 
 #robots and games classes ave reference to login class

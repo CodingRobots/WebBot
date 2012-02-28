@@ -21,7 +21,7 @@ DeclarativeBase = declarative_base()
 # You can have a query property on all your model classes by doing this:
 # DeclarativeBase.query = DBSession.query_property()
 # Or you can use a session-aware mapper as it was used in TurboGears 1:
-# DeclarativeBase = declarative_base(mapper=DBSession.mapper)
+DeclarativeBase = declarative_base(mapper=DBSession.mapper)
 
 # Global metadata.
 # The default metadata is the one from the declarative base.
@@ -59,4 +59,6 @@ def init_model(engine):
     #mapper(Reflected, t_reflected)
 
 # Import your model modules here.
+
+from webbot.model.stuff import Login, Games, Robots
 from webbot.model.auth import User, Group, Permission
