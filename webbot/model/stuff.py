@@ -12,6 +12,24 @@ from datetime import datetime
 from tg2app.model import DeclarativeBase, metadata, DBSession
 
 
+#robots and games classes ave reference to login class
+
+class Games(DeclarativeBase):
+    __tablename__ = 'games'
+
+    id = Column(Integer, primary_key=True)
+    #reference to Login
+    place = Column(Integer, nullable=False)
+    date = Column(DateTime, nullable=False)
+
+class Robots(DeclarativeBase):
+    __tablename__ = 'robots'
+
+    id = Column(Integer, primary_key=True)
+    bot_name = Column(Unicode(255), nullable=False)
+    #owner =      reference to Login
+    bot_file = Column(Unicode(255), nullable=False)
+
 class Login(DeclarativeBase):
     __tablename__ = 'logins'
 
@@ -23,6 +41,7 @@ class Login(DeclarativeBase):
     def __json__(self):
         return {
             'name': self.name,
+	    'Last Seen': self.last_seen,
         }
 
 class Message(DeclarativeBase):
