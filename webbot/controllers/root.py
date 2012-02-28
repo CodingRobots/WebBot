@@ -64,7 +64,7 @@ class RootController(BaseController):
 
     @expose()
     def do_login(self, name, access_token):
-    
+	print("test")    
         query = model.Login.query.filter_by(name=name)
         
         if query.count() == 0:
