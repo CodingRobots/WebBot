@@ -1,5 +1,5 @@
 (function() {
-  var act_on_login, check_auth, force_login, globals;
+  var act_on_login, check_auth, force_login, globals, access_token, good_token;
 
   globals = typeof exports !== "undefined" && exports !== null ? exports : this;
 
@@ -40,18 +40,49 @@
       redirect_uri: window.location.href,
       response_type: 'token'
     });
+    setCookie(query);
     url = path + query;
     return window.location = url;
   };
 
-  check_auth = function() {
-    var access_token;
-//    if (window.location.href.indexOf('waiting') !== -1) return;
-    if (window.location.hash.length === 0) {
+  check_auth = function()
+  {
+    console.log(access_token);
+    console.log(good_token);
+    access_token = getCookie(good_token);
+    console.log(access_token);
+    if(access_token != null && access_token != "")
+    {
+        good_token = window.location.hash.substring(14).split('&')[0];
+        return act_on_login(good_token);
+    }
+    else
+    {
       return force_login();
-    } else {
-      access_token = window.location.hash.substring(14).split('&')[0];
-      return act_on_login(access_token);
+    }
+  };
+
+  setCookie = function(c_name,value)
+  {
+    var exdate=new Date();
+    //turn into hours
+    exdate.setDate(exdate.getHours() + 1);
+    var c_value=escape(value) ? "" : "; expires="+exdate.toUTCString();
+    document.cookie=c_name + "=" + c_value;
+  };
+
+  getCookie = function(c_name)
+  {
+    var i,x,y,ARRcookies=document.cookie.split(";");
+    for (i=0;i<ARRcookies.length;i++)
+    {
+      x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+      y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+      x=x.replace(/^\s+|\s+$/g,"");
+      if (x==c_name)
+      {
+        return unescape(y);
+      }
     }
   };
 
