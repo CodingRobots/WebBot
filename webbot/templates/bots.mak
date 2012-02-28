@@ -6,31 +6,27 @@
 <script src="/javascript/jCanvas.js" type="text/javascript"></script>
 <script src="/javascript/drawWorld.js" type="text/javascript"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript"></script>
-<script>
-	%for index, robot in enumerate(robot_infos):
-		$(function() {
-			$( "#pb${index}" ).progressbar({
-				value: 100
-			});
-		});
-	%endfor
-</script>
 
+<script>
+    $(document).ready(function(){
+        interval = setInterval("read_json('${game_id}')", 100)
+    });
+</script>
 
 <div id='canvas_box'>
   <canvas height=500 width=600/>
 </div>
 <div id='bots_box'>
   <h1>WebBotWar</h1>
-  %for index, robot in enumerate(robot_infos):
+  %for index, robot in enumerate(robot_infos['robots']):
     <div id='robo_info_${index}' class='robo_info'>
-	  <span class='name'>Robot ${index}</span>
-	  <img src='images/r0${'%d' % (index+1)}.png'></img>
-	  <div class='progbar' id="pb${index}"></div>
+      <span class='name'>Robot ${index}</span>
+      <img src='images/r0${'%d' % (index+1)}.png'></img>
+      <div class='progbar' id="pb${index}"></div>
     </div>
   %endfor
   <div>
-    <h2>Time Remaining: <span id='timeleft'>X:XX</span></h2>
+    <h2>Time Remaining: <span id='timeleft'></span></h2>
   </div>
 </div>
 <div style="clear:both"/>

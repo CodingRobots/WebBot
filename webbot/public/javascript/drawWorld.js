@@ -1,44 +1,77 @@
-$(document).ready(function(){
-    $.getJSON('/robo_data?game_id=1', function(data) {
+interval = undefined;
+
+function read_json(game_id){
+    $.getJSON('/robo_data?game_id=' + game_id, function(data) {
+        //clear the canvas
+        $("canvas").clearCanvas();
+
+        if (data.time < 0) {
+            clearInterval(interval);
+        }else{
+            $("#timeleft").text(data.time);
+        }
+
         // Handle the robots
-        $.each(data.robot_infos, function(index,value){
-            var location = value.loc;
+        $.each(data.robots, function(index,value){
+            $( "#pb" + index ).progressbar({
+                value: value.health
+            });
+
+            $('#robo_info_' + index + ' .name').text(value.name);
+
+            if (value.health <= 0){
+                return;
+            }
+            var location = value.position,
+                x_coord = location[0] * 6,
+                y_coord = location[1] * 5;
             $("canvas")
             .drawImage({
                 source: '/images/r0' + (index + 1) + '.png',
-                x: location[0], y: location[1],
+                x: x_coord, y: y_coord,
                 width: 32,
                 height: 32,
-                fromCenter: false,
-                angle: location[2],
+                fromCenter: true,
+                angle: value.rotation,
             })
             .drawImage({
                 source: '/images/turret.png',
-                x: location[0], y: location[1],
+                x: x_coord, y: y_coord,
                 width: 32,
                 height: 32,
-                fromCenter: false,
-                angle: location[3],
+                fromCenter: true,
+                angle: value.rotation + value.turret_angle,
             });
         });
         $.each(data.bullets, function(index,value){
-            var location = value.loc;
+            var location = value.position,
+                x_coord = location[0] * 6,
+                y_coord = location[1] * 5,
+                color = '#000';
+            if (value.exploding == 1){
+                color = '#FFFF00';
+            } else if (value.exploding == 2){
+                color = '#FF0000';
+            }
             $("canvas")
             .drawArc({
-                fillStyle: "#000",
-                x: location[0], y: location[1],
-                radius: 1
+                fillStyle: color,
+                x: x_coord, y: y_coord,
+                radius: 2 + (5*value.exploding)
             });
         });
-        $.each(data.explosions, function(index,value){
-            var location = value.loc;
-            var size = value.size;
+        $.each(data.walls, function(index,value){
+            var location = value.position,
+                x_coord = location[0] * 6,
+                y_coord = location[1] * 5;
             $("canvas")
-            .drawArc({
-                fillStyle: "#ff0000",
-                x: location[0], y: location[1],
-                radius: 10
+            .drawRect({
+                fillStyle: "#000",
+                x: x_coord, y: y_coord,
+                width: value.width * 6,
+                height: value.height * 5,
+                fromCenter: true
             });
         });
     });
-});
+};
