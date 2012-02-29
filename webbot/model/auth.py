@@ -101,25 +101,19 @@ class User(DeclarativeBase):
 
     #{ Columns
 
-    user_id = Column(Integer, autoincrement=True, primary_key=True)
+    user_id = Column(Integer, primary_key=True) #facebook userid
 
-    user_name = Column(Unicode(16), unique=True, nullable=False)
+    friends = Column(Integer) # a list of friends (their fb uids)
 
-    email_address = Column(Unicode(255), unique=True, nullable=False,
-                           info={'rum': {'field':'Email'}})
+    robots = Column(Unicode(255)) #We are going to need to limit this to say 3 (do that on upload or something like that
 
-    display_name = Column(Unicode(255))
-
-    _password = Column('password', Unicode(128),
-                       info={'rum': {'field':'Password'}})
-
-    created = Column(DateTime, default=datetime.now)
+    display_name = Column(Unicode(255)) # display name, probably just "First Last"
 
     #{ Special methods
 
     def __repr__(self):
-        return ('<User: name=%s, email=%s, display=%s>' % (
-                self.user_name, self.email_address, self.display_name)).encode('utf-8')
+        return ('<User: name=%s, user_id=%s, robots=%s>' % (
+                self.display_name, self.user_id, self.robots)).encode('utf-8')
 
     def __unicode__(self):
         return self.display_name or self.user_name
@@ -135,62 +129,12 @@ class User(DeclarativeBase):
         return perms
 
     @classmethod
-    def by_email_address(cls, email):
-        """Return the user object whose email address is ``email``."""
-        return DBSession.query(cls).filter_by(email_address=email).first()
+    def by_user_id(self,userid):
+        return DBSession.query(self).filter_by(user_id=userid).first()
 
     @classmethod
-    def by_user_name(cls, username):
-        """Return the user object whose user name is ``username``."""
-        return DBSession.query(cls).filter_by(user_name=username).first()
-
-    @classmethod
-    def _hash_password(cls, password):
-        # Make sure password is a str because we cannot hash unicode objects
-        if isinstance(password, unicode):
-            password = password.encode('utf-8')
-        salt = sha256()
-        salt.update(os.urandom(60))
-        hash = sha256()
-        hash.update(password + salt.hexdigest())
-        password = salt.hexdigest() + hash.hexdigest()
-        # Make sure the hashed password is a unicode object at the end of the
-        # process because SQLAlchemy _wants_ unicode objects for Unicode cols
-        if not isinstance(password, unicode):
-            password = password.decode('utf-8')
-        return password
-
-    def _set_password(self, password):
-        """Hash ``password`` on the fly and store its hashed version."""
-        self._password = self._hash_password(password)
-
-    def _get_password(self):
-        """Return the hashed version of the password."""
-        return self._password
-
-    password = synonym('_password', descriptor=property(_get_password,
-                                                        _set_password))
-
-    #}
-
-    def validate_password(self, password):
-        """
-        Check the password against existing credentials.
-
-        :param password: the password that was provided by the user to
-            try and authenticate. This is the clear text version that we will
-            need to match against the hashed one in the database.
-        :type password: unicode object.
-        :return: Whether the password is valid.
-        :rtype: bool
-
-        """
-        hash = sha256()
-        if isinstance(password, unicode):
-            password = password.encode('utf-8')
-        hash.update(password + str(self.password[:64]))
-        return self.password[64:] == hash.hexdigest()
-
+    def by_display_name(cls, dname):
+        return DBSession.query(cls).filter_by(display_name=dname).first()
 
 class Permission(DeclarativeBase):
     """

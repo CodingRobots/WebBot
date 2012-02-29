@@ -1,7 +1,5 @@
 <%inherit file="local:templates.master"/>
 
-<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.min.js" type="text/javascript"></script>
-
 <script>
   function countCheck() {
     if ($(':checked').length > 5) {
