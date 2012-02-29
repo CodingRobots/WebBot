@@ -39,6 +39,16 @@ class RootController(BaseController):
     admin = AdminController(model, DBSession, config_type=TGAdminConfig)
 
     error = ErrorController()
+    @expose('webbot.templates.upload')
+    def code(self):
+        return dict(page='code')
+
+    @expose()
+    def upload_code(self,**kw):
+        upload = kw['code'].file
+        name = kw['code'].filename
+        print "Uploded:",name
+        redirect("/")
 
     @expose('webbot.templates.index')
     def index(self):
