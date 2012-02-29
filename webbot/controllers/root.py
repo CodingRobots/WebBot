@@ -16,7 +16,8 @@ from random import randrange
 import subprocess
 import uuid
 from time import clock, sleep
-import json
+from pymongo import Connection
+import os
 
 from sqlalchemy import desc
 from datetime import datetime, timedelta
@@ -113,9 +114,8 @@ class RootController(BaseController):
     @expose('webbot.templates.gamelist')
     def games(self):
         """List all the available games."""
-        import memcache
-        mc = memcache.Client(['127.0.0.1:11211'])
-        game_list = mc.get('games') or []
+        game_list = DBSession.query(model.Game).all()
+        print(game_list[0])
         return dict(games=game_list)
 
     @expose('json')
@@ -124,23 +124,14 @@ class RootController(BaseController):
         # loc is the current location of the robot in
         #   (x, y, robot_orientation, turret_orientation)
         # format
-        import memcache
-        mc = memcache.Client(['127.0.0.1:11211'])
-        return json.loads(mc.get(game_id.encode('ascii')))
 
-    @expose('json')
-    def store(self, value):
-        import memcache
-        mc = memcache.Client(['127.0.0.1:11211'])
-        mc.set('key', value)
-        cached=mc.get(value)
-        return dict(cached=cached)
+        if os.environ.get('OPENSHIFT_NOSQL_DB_TYPE') == 'mongodb':
+            conn = Connection(os.environ.get('OPENSHIFT_NOSQL_DB_URL'))
+        else:
+            conn = Connection()
+        db = conn.pybot
 
-    @expose('json')
-    def cached(self):
-        import memcache
-        mc = memcache.Client(['127.0.0.1:11211'])
-        return dict(cached=mc.get('key'))
+        return db[game_id].find_one()
 
     @expose('webbot.templates.environ')
     def environ(self):
@@ -180,17 +171,21 @@ class RootController(BaseController):
 
     @expose()
     def start_game(self, **kwargs):
-        import memcache
         robots = ''
         for key in kwargs.keys(): robots += key + ' '
         robots = robots[:-1]
         game_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock())))
-        subprocess.Popen(['python', 'main.py', '-g', '-I', game_id, '-R', robots], cwd='../../pybotwar')
 
-        mc = memcache.Client(['127.0.0.1:11211'])
-        games = mc.get('games') or []
-        games.append(dict(name=robots, id=game_id))
-        mc.set('games', games)
+        # Try to detect OpenShiftiness
+        base = os.environ.get('OPENSHIFT_REPO_DIR')
+        if not base:
+            base = '../../'
+
+        subprocess.Popen(['python', 'main.py', '-g', '-I', game_id, '-R', robots],
+                         cwd=base+'pybotwar')
+
+        new_game = model.Game(id=game_id, name=robots)
+        DBSession.add(new_game)
         sleep(1)
         redirect('/game?game_id=%s' % (game_id))
 
