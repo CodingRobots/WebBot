@@ -18,8 +18,15 @@ import uuid
 from time import clock, sleep
 import json
 
+from sqlalchemy import desc
+from datetime import datetime, timedelta
+import random
+
 __all__ = ['RootController']
 
+# Add this function OUTSIDE of the RootController
+def log_message(msg):
+    model.DBSession.add(model.Message(msg=msg))
 
 class RootController(BaseController):
     """
@@ -52,6 +59,39 @@ class RootController(BaseController):
         local_file.write(upload.read())
         local_file.close()
         redirect("/")
+
+    # Add these methods INSIDE the RootController
+    @expose()
+    def do_logout(self, name):
+        query = model.Login.query.filter_by(name=name)
+        
+        if query.count() == 0:
+            # wtf...  when would this happen?
+            log_message("'%s' (who DNE) tried to logout." % name)
+            redirect('http://ritfloss.rtfd.org/')
+        
+        user = query.first()
+        log_message("'%s' logged out." % user.name)
+        model.DBSession.delete(user)
+        redirect('http://ritfloss.rtfd.org/')
+
+    @expose()
+    def do_login(self, name, access_token):
+        query = model.Login.query.filter_by(name=name)
+        
+        if query.count() == 0:
+            user = model.Login(name=name)
+            model.DBSession.add(user)
+        elif query.count() > 1:
+            # wtf...  when would this happen?
+            user = query.first()
+        else:
+            user = query.one()
+
+        user.access_token = access_token
+#        log_message("%s logged in" % user.name)
+
+        #redirect(url('/'))
 
     @expose('webbot.templates.index')
     def index(self):

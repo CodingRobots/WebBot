@@ -1,0 +1,17 @@
+#canvas_box {
+  float: left;
+}
+
+#bots_box {
+  width: 300px;
+  float: right;
+}
+
+.name {
+  display: block;
+}
+
+.progbar {
+  width: 250px;
+  float: right;
+}
