@@ -78,7 +78,7 @@ class RootController(BaseController):
         user.access_token = access_token
 #        log_message("%s logged in" % user.name)
 
-        redirect(url('/'))
+        #redirect(url('/'))
 
     @expose('webbot.templates.index')
     def index(self):

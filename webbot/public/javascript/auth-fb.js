@@ -6,24 +6,20 @@
   globals.appID = "247360712014477";
 
   globals.logged_in_callback = function(obj) {
-    console.log(obj);
     if (obj.error != null) {
       return alert("Some auth problem with facebook.  Failing.");
     } else {
-      return window.location = '/do_login?' + $.param({
-        name: obj.name,
-        access_token: globals.access_token
-      });
+      return;
     }
   };
 
   act_on_login = function(access_token) {
     var path, query, script, url;
+    setCookie("auth_cookie",access_token);
     globals.access_token = access_token;
     path = "https://graph.facebook.com/me?";
-    console.log(access_token);
     query = $.param({
-      access_token: access_token,
+      access_token: getCookie("auth_cookie"),
       callback: 'logged_in_callback'
     });
     url = path + query;
@@ -33,51 +29,53 @@
   };
 
   force_login = function() {
-    var path, query, url;
-    path = 'https://www.facebook.com/dialog/oauth?';
-    query = $.param({
-      client_id: globals.appID,
-      redirect_uri: window.location.href,
-      response_type: 'token'
-    });
-    url = path + query;
-    setCookie("auth_cookie",query);
-    return window.location = url;
+    if(getCookie("auth_cookie")==null)
+    {
+      var path, query, url;
+      path = 'https://www.facebook.com/dialog/oauth?';
+      query = $.param({
+        client_id: globals.appID,
+        redirect_uri: 'http://' + window.location.hostname,
+        response_type: 'token'
+      });
+      url = path + query;
+      return window.location = url;
+    }
+    else
+    {
+      redirect('/robots');
+    }
   };
 
   check_auth = function()
   {
-    access_token = getCookie("auth_cookie");
-    if(access_token != null && access_token != "")
+    if(getCookie("auth_cookie")==null)
     {
-        good_token = access_token;
-//        good_token = window.location.hash.substring(14).split('&')[0];
-        return act_on_login(good_token);
+		var access_token;
+		if (window.location.hash.length === 0) {
+		  return force_login();
+		} else {
+		  access_token = window.location.hash.substring(14).split('&')[0];
+		  setCookie('auth_cookie', access_token);
+		  return act_on_login(access_token);
+		}
     }
     else
     {
-      return force_login();
+      return act_on_login(getCookie("auth_cookie"));
     }
+
   };
+
 
   setCookie = function(c_name,value)
   {
-    document.cookie=c_name + "=" + value;
+    $.cookie(c_name, value, { expires: 1 });
   };
 
   getCookie = function(c_name)
   {
-    var i,x,y,ARRcookies=document.cookie.split(";");
-    for (i=0;i<ARRcookies.length;i++)
-    {
-      x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-      y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-      x=x.replace(/^\s+|\s+$/g,"");
-      if (x==c_name)
-      {
-        return unescape(y);
-      }
-    }
+    return $.cookie(c_name);
   };
 
   $(document).ready(check_auth);
