@@ -8,7 +8,9 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript"></script>
 
 <script>
-    $(document).ready(setInterval("read_json(\"${game_id}\")", 100));
+    $(document).ready(function(){
+        interval = setInterval("read_json('${game_id}')", 100)
+    });
 </script>
 
 <div id='canvas_box'>

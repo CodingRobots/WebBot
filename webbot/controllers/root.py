@@ -54,7 +54,7 @@ class RootController(BaseController):
     def robots(self):
         """List all the available robots."""
         robo_list = [u'Ninja', u'Pirate', u'Robot', u'Wizard', u'Velociraptor',
-                     u'Ninja2', u'Pirate2', u'Robot2', u'Wizard2']
+                     u'robot06', u'robot07', u'robot08']
         return dict(robots=robo_list)
 
     @expose('webbot.templates.gamelist')
@@ -138,7 +138,7 @@ class RootController(BaseController):
         games = mc.get('games') or []
         games.append(dict(name=robots, id=game_id))
         mc.set('games', games)
-        sleep(.2)
+        sleep(1)
         redirect('/game?game_id=%s' % (game_id))
 
     @expose()
