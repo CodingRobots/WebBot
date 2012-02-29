@@ -48,6 +48,9 @@ class RootController(BaseController):
         upload = kw['code'].file
         name = kw['code'].filename
         print "Uploded:",name
+        local_file = open("pybotwar/robots/%s" % name,'w')
+        local_file.write(upload.read())
+        local_file.close()
         redirect("/")
 
     @expose('webbot.templates.index')
