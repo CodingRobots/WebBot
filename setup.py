@@ -37,7 +37,10 @@ install_requires=[
     "repoze.what-quickstart",
     "repoze.what.plugins.sql>=1.0.1",
     "tw.forms",
-    "python-memcached",
+    "pymongo",
+    "mysql-python",
+    "WebOb==1.0.8",
+    "Pylons==1.0",
     ]
 
 if sys.version_info[:2] == (2,4):
