@@ -108,7 +108,7 @@ class RootController(BaseController):
     def robots(self):
         """List all the available robots."""
         robo_list = [u'Ninja', u'Pirate', u'Robot', u'Wizard', u'Velociraptor',
-                     u'robot06', u'robot07', u'robot08']
+                     u'Zombie', u'robot07', u'robot08']
         return dict(robots=robo_list)
 
     @expose('webbot.templates.gamelist')
