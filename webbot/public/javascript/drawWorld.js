@@ -9,6 +9,23 @@ function read_json(game_id){
             clearInterval(interval);
         }else{
             $("#timeleft").text(data.time);
+            $.each(data.bullets, function(index,value){
+                var location = value.position,
+                    x_coord = location[0] * 6,
+                    y_coord = location[1] * 5,
+                    color = '#000';
+                if (value.exploding == 1){
+                    color = '#FFFF00';
+                } else if (value.exploding == 2){
+                    color = '#FF0000';
+                }
+                $("canvas")
+                .drawArc({
+                    fillStyle: color,
+                    x: x_coord, y: y_coord,
+                    radius: 2 + (5*value.exploding)
+                });
+            });
         }
 
         // Handle the robots
@@ -41,23 +58,6 @@ function read_json(game_id){
                 height: 32,
                 fromCenter: true,
                 angle: value.rotation + value.turret_angle,
-            });
-        });
-        $.each(data.bullets, function(index,value){
-            var location = value.position,
-                x_coord = location[0] * 6,
-                y_coord = location[1] * 5,
-                color = '#000';
-            if (value.exploding == 1){
-                color = '#FFFF00';
-            } else if (value.exploding == 2){
-                color = '#FF0000';
-            }
-            $("canvas")
-            .drawArc({
-                fillStyle: color,
-                x: x_coord, y: y_coord,
-                radius: 2 + (5*value.exploding)
             });
         });
         $.each(data.walls, function(index,value){
