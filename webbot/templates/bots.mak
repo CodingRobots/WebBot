@@ -20,7 +20,7 @@
   %for index, robot in enumerate(robot_infos['robots']):
     <div id='robo_info_${index}' class='robo_info'>
       <span class='name'>Robot ${index}</span>
-      <img src='images/r0${'%d' % (index+1)}.png'></img>
+      <img src='images/r${'%02d' % (index+1)}.png'></img>
       <div class='progbar' id="pb${index}"></div>
     </div>
   %endfor
