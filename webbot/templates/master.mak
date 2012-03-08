@@ -20,11 +20,6 @@
 <%def name="content_wrapper()">
     <div id="content">
     <div>
-    % if page:
-      <div class="currentpage">
-       Now Viewing: <span>${page}</page>
-      </div>
-    % endif
       <%
       flash=tg.flash_obj.render('flash', use_js=False)
       %>
