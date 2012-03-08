@@ -126,7 +126,7 @@ class RootController(BaseController):
         # format
 
         if os.environ.get('OPENSHIFT_NOSQL_DB_TYPE') == 'mongodb':
-            conn = Connection(os.environ.get('OPENSHIFT_NOSQL_DB_URL'))
+            conn = Connection(os.environ.get('OPENSHIFT_NOSQL_DB_HOST'))
         else:
             conn = Connection()
         db = conn.pybot
