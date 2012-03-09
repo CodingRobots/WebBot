@@ -103,10 +103,6 @@ class User(DeclarativeBase):
 
     user_id = Column(Integer, primary_key=True) #facebook userid
 
-    friends = Column(Integer) # a list of friends (their fb uids)
-
-    robots = Column(Unicode(255)) #We are going to need to limit this to say 3 (do that on upload or something like that
-
     display_name = Column(Unicode(255)) # display name, probably just "First Last"
 
     #{ Special methods

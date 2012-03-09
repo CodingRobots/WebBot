@@ -5,14 +5,10 @@ from tg import expose, flash, require, url, lurl, request, redirect
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from webbot import model
 from repoze.what import predicates
-from webbot.controllers.secure import SecureController
 from webbot.model import DBSession, metadata
-from tgext.admin.tgadminconfig import TGAdminConfig
-from tgext.admin.controller import AdminController
 
 from webbot.lib.base import BaseController
 from webbot.controllers.error import ErrorController
-from random import randrange
 import subprocess
 import uuid
 from time import clock, sleep
@@ -20,14 +16,10 @@ from pymongo import Connection
 import os
 
 from sqlalchemy import desc
-from datetime import datetime, timedelta
+from datetime import datetime
 import random
 
 __all__ = ['RootController']
-
-# Add this function OUTSIDE of the RootController
-def log_message(msg):
-    model.DBSession.add(model.Message(msg=msg))
 
 class RootController(BaseController):
     """
@@ -43,61 +35,12 @@ class RootController(BaseController):
     must be wrapped around with :class:`tg.controllers.WSGIAppController`.
 
     """
-    secc = SecureController()
-    admin = AdminController(model, DBSession, config_type=TGAdminConfig)
-
     error = ErrorController()
-    @expose('webbot.templates.upload')
-    def code(self):
-        return dict(page='code')
-
-    @expose()
-    def upload_code(self,**kw):
-        upload = kw['code'].file
-        name = kw['code'].filename
-        print "Uploded:",name
-        local_file = open("pybotwar/robots/%s" % name,'w')
-        local_file.write(upload.read())
-        local_file.close()
-        redirect("/")
-
-    # Add these methods INSIDE the RootController
-    @expose()
-    def do_logout(self, name):
-        query = model.Login.query.filter_by(name=name)
-
-        if query.count() == 0:
-            # wtf...  when would this happen?
-            log_message("'%s' (who DNE) tried to logout." % name)
-            redirect('http://ritfloss.rtfd.org/')
-
-        user = query.first()
-        log_message("'%s' logged out." % user.name)
-        model.DBSession.delete(user)
-        redirect('http://ritfloss.rtfd.org/')
-
-    @expose()
-    def do_login(self, name, access_token):
-        query = model.Login.query.filter_by(name=name)
-
-        if query.count() == 0:
-            user = model.Login(name=name)
-            model.DBSession.add(user)
-        elif query.count() > 1:
-            # wtf...  when would this happen?
-            user = query.first()
-        else:
-            user = query.one()
-
-        user.access_token = access_token
-#        log_message("%s logged in" % user.name)
-
-        #redirect(url('/'))
 
     @expose('webbot.templates.index')
     def index(self):
         """Handle the front-page."""
-        return dict(page='index')
+        return dict()
 
     @expose('webbot.templates.bots')
     def game(self, game_id=''):
@@ -131,42 +74,6 @@ class RootController(BaseController):
         db = conn.pybot
 
         return db[game_id].find_one()
-
-    @expose('webbot.templates.environ')
-    def environ(self):
-        """This method showcases TG's access to the wsgi environment."""
-        return dict(environment=request.environ)
-
-    @expose('webbot.templates.data')
-    @expose('json')
-    def data(self, **kw):
-        """This method showcases how you can use the same controller for a data page and a display page"""
-        return dict(params=kw)
-    @expose('webbot.templates.authentication')
-    def auth(self):
-        """Display some information about auth* on this application."""
-        return dict(page='auth')
-
-    @expose('webbot.templates.index')
-    @require(predicates.has_permission('manage', msg=l_('Only for managers')))
-    def manage_permission_only(self, **kw):
-        """Illustrate how a page for managers only works."""
-        return dict(page='managers stuff')
-
-    @expose('webbot.templates.index')
-    @require(predicates.is_user('editor', msg=l_('Only for the editor')))
-    def editor_user_only(self, **kw):
-        """Illustrate how a page exclusive for the editor works."""
-        return dict(page='editor stuff')
-
-    @expose('webbot.templates.login')
-    def login(self, came_from=lurl('/')):
-        """Start the user login."""
-        login_counter = request.environ['repoze.who.logins']
-        if login_counter > 0:
-            flash(_('Wrong credentials'), 'warning')
-        return dict(page='login', login_counter=str(login_counter),
-                    came_from=came_from)
 
     @expose()
     def start_game(self, **kwargs):
