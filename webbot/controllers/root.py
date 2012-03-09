@@ -95,6 +95,41 @@ class RootController(BaseController):
         redirect('/game?game_id=%s' % (game_id))
 
     @expose()
+    def upload_code(self, **kw):
+        upload = kw['code'].file
+        name = kw['name']
+        uid = kw['userid']
+
+        robot = model.Robot(userid=uid, name=name)
+        DBSession.add(robot)
+
+        # Try to detect OpenShiftiness
+        base = os.environ.get('OPENSHIFT_REPO_DIR') or '../../'
+
+        print("%spybotwar/robots/%s@%s.py" % (base, name, uid))
+        with open("%spybotwar/robots/%s@%s.py" % (base, name, uid), 'w') as local_file:
+            local_file.write(upload.read())
+
+        redirect("/")
+
+    @expose()
+    def do_login(self, name, access_token, came_from=lurl('/')):
+        query = model.Login.query.filter_by(name=name)
+
+        if query.count() == 0:
+            user = model.Login(name=name)
+            model.DBSession.add(user)
+        elif query.count() > 1:
+            # wtf...  when would this happen?
+            user = query.first()
+        else:
+            user = query.one()
+
+        user.access_token = access_token
+        flash(_('Hello, %s!') % user.name)
+        redirect(came_from)
+
+    @expose()
     def post_login(self, came_from=lurl('/')):
         """
         Redirect the user to the initially requested page on successful
