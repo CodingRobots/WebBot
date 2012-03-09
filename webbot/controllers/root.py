@@ -89,7 +89,7 @@ class RootController(BaseController):
         subprocess.Popen(['python', 'main.py', '-g', '-I', game_id, '-R', robots],
                          cwd=base+'pybotwar')
 
-        new_game = model.Game(id=game_id, name=robots)
+        new_game = model.Game(id=game_id, name=robots, userid=userid, date=datetime.now())
         DBSession.add(new_game)
         sleep(1)
         redirect('/game?game_id=%s' % (game_id))
