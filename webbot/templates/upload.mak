@@ -8,9 +8,10 @@
 Upload your robots code here
 </p>
 <form action="upload_code" enctype="multipart/form-data" method="POST">
-<input type="file" name="code">
-<br />
-<input type="submit" name="submit">
+File to upload: <input type="file" name="code"/><br />
+Name of robot: <input type="text" name="name"/><br />
+<input type="hidden" name="userid"/>
+<input type="submit" name="submit" value="Upload!"/>
 </form>
 
 </div>

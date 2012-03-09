@@ -85,15 +85,18 @@ class RootController(BaseController):
 
     @expose()
     def start_game(self, **kwargs):
-        robots = ''
-        for key in kwargs.keys(): robots += key + ' '
-        robots = robots[:-1]
-        game_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, robots + str(clock())))
+        userid = kwargs['userid']
+        del kwargs['userid']
+
+        user_bot = kwargs['user']
+        del kwargs['user']
+
+        robots = ' '.join(kwargs.keys())
+        robots += ' ' + userid + '@' + user_bot
+        game_id = str(uuid.uuid4())
 
         # Try to detect OpenShiftiness
-        base = os.environ.get('OPENSHIFT_REPO_DIR')
-        if not base:
-            base = '../../'
+        base = os.environ.get('OPENSHIFT_REPO_DIR') or '../../'
 
         subprocess.Popen(['python', 'main.py', '-g', '-I', game_id, '-R', robots],
                          cwd=base+'pybotwar')
