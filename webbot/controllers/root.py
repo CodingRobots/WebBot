@@ -17,7 +17,6 @@ import os
 
 from sqlalchemy import desc
 from datetime import datetime
-import random
 
 __all__ = ['RootController']
 
