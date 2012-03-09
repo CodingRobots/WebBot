@@ -47,11 +47,13 @@ class RootController(BaseController):
         return dict(game_id=game_id, robot_infos=self.robo_data(game_id))
 
     @expose('webbot.templates.list')
-    def robots(self):
+    def robots(self, userid=None):
         """List all the available robots."""
+        #TODO: get robot list from somewhere (user?)
+        user_list = DBSession.query(model.Robot).filter_by(userid=userid).all()
         robo_list = [u'Ninja', u'Pirate', u'Robot', u'Wizard', u'Velociraptor',
                      u'Zombie', u'robot07', u'robot08']
-        return dict(robots=robo_list)
+        return dict(user_robots=user_list, robots=robo_list)
 
     @expose('webbot.templates.gamelist')
     def games(self):

@@ -16,11 +16,19 @@
 
 <form action='start_game'>
   <span id='error'></span>
+  %for robot in user_robots:
+    <div>
+	  <span>${robot.name}</span>
+	  <input onclick='countCheck()' type='radio' value='${robot.name}' name='user'/>
+    </div>
+  %endfor
+
   %for robot in robots:
     <div>
 	  <span>${robot} Robot</span>
 	  <input onclick='countCheck()' type='checkbox' name='${robot}'/>
     </div>
   %endfor
-  <input id='submit' type='submit'/>
+  <input type='hidden' name='userid'/>
+  <input id='submit' type='submit' value='Go'/>
 </form>

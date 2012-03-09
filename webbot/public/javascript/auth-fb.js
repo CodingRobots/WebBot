@@ -9,7 +9,8 @@
     if (obj.error != null) {
       return alert("Some auth problem with facebook.  Failing.");
     } else {
-      return;
+      globals.data = obj;
+      return handle_page();
     }
   };
 
@@ -59,7 +60,14 @@
     else {
       return act_on_login(getCookie("auth_cookie"));
     }
+  };
 
+  handle_page = function() {
+      $('#login > a').text("Hello, "+globals.data['name']);
+      $(':input:hidden').val(globals.data['id']);
+      $('.uid').attr('href', function(index, attr) {
+          return attr + '?userid=' + globals.data['id'];
+      });
   };
 
 

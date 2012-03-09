@@ -61,20 +61,13 @@
 </%def>
 <%def name="main_menu()">
   <ul id="mainmenu">
-    <li class="first"><a href="${tg.url('/')}" class="${('', 'active')[page=='index']}">Welcome</a></li>
-        <li><a href="${tg.url('/robots')}" class="${('', 'active')}">Robots!</a></li>
-        <li><a href="${tg.url('/games')}" class="${('', 'active')}">Games</a></li>
-        <li><a href="${tg.url('/code')}" class="${('', 'activae')}">Code</a></li>
-    % if tg.auth_stack_enabled:
-      <span>
-          % if not request.identity:
-            <li id="login" class="loginlogout"><a href="${tg.url('/login')}">Login</a></li>
-          % else:
-            <li id="login" class="loginlogout"><a href="${tg.url('/logout_handler')}">Logout</a></li>
-            <li id="admin" class="loginlogout"><a href="${tg.url('/admin')}">Admin</a></li>
-          % endif
-      </span>
-    % endif
+    <li class="first"><a href="${tg.url('/')}" class="${('', 'active')}">Welcome</a></li>
+    <li><a href="${tg.url('/robots')}" class='uid' class="${('', 'active')}">Pick Robots</a></li>
+    <li><a href="${tg.url('/games')}" class='uid' class="${('', 'active')}">Watch Games</a></li>
+    <li><a href="${tg.url('/code')}" class="${('', 'active')}">Upload Code</a></li>
+    <span>
+        <li id="login" class="loginlogout"><a href="#"></a></li>
+    </span>
   </ul>
 </%def>
 </html>
