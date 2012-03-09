@@ -60,21 +60,18 @@
 		  return act_on_login(access_token);
 		}
     }
-    else
-    {
+    else {
       return act_on_login(getCookie("auth_cookie"));
     }
 
   };
 
 
-  setCookie = function(c_name,value)
-  {
+  setCookie = function(c_name, value) {
     $.cookie(c_name, value, { expires: 1 });
   };
 
-  getCookie = function(c_name)
-  {
+  getCookie = function(c_name) {
     return $.cookie(c_name);
   };
 
