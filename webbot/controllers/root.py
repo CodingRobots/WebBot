@@ -18,6 +18,9 @@ import os
 from sqlalchemy import desc
 from datetime import datetime
 
+import tw2.forms as twf
+from webbot.widgets import WebbotForm, UploadForm
+
 __all__ = ['RootController']
 
 class RootController(BaseController):
@@ -46,14 +49,25 @@ class RootController(BaseController):
         """Handle displaying the game."""
         return dict(game_id=game_id, robot_infos=self.robo_data(game_id))
 
-    @expose('webbot.templates.list')
+    @expose('webbot.templates.upload')
     def robots(self, userid=None):
         """List all the available robots."""
         #TODO: get robot list from somewhere (user?)
         user_list = DBSession.query(model.Robot).filter_by(userid=userid).all()
+        user_list = [x.name.split('@')[0] for x in user_list]
         robo_list = [u'Ninja', u'Pirate', u'Robot', u'Wizard', u'Velociraptor',
                      u'Zombie', u'robot07', u'robot08']
-        return dict(user_robots=user_list, robots=robo_list)
+
+        # Build a custom widget to hold the form.x
+        class RoboForm(WebbotForm):
+            class user(twf.RadioButtonList()):
+                options = user_list
+            class example(twf.CheckBoxList()):
+                options = robo_list
+
+        return dict(form=RoboForm(action='start_game'),
+                    page_title='',
+                    form_title='Here are all the robots you can play with:')
 
     @expose('webbot.templates.gamelist')
     def games(self, userid=None):
@@ -66,7 +80,9 @@ class RootController(BaseController):
 
     @expose('webbot.templates.upload')
     def code(self):
-        return dict()
+        return dict(form=UploadForm(action='upload_code'),
+                    page_title='Upload your robot code here',
+                    form_title='Upload your robots code here')
 
     @expose('json')
     def robo_data(self, game_id):
@@ -86,18 +102,19 @@ class RootController(BaseController):
     @expose()
     def start_game(self, **kwargs):
         userid = kwargs['userid']
-        del kwargs['userid']
+        robots = []
 
-        user_bot = kwargs['user']
-        del kwargs['user']
+        if 'user' in kwargs:
+            robots.append(userid + '@' + kwargs['user'])
 
-        robots = ' '.join(kwargs.keys())
-        robots += ' ' + userid + '@' + user_bot
+        if 'example' in kwargs:
+            robots.extend(kwargs['example'])
+
+        robots = ' '.join(robots)
         game_id = str(uuid.uuid4())
 
         # Try to detect OpenShiftiness
         base = os.environ.get('OPENSHIFT_REPO_DIR') or '../../'
-
         subprocess.Popen(['python', 'main.py', '-g', '-I', game_id, '-R', robots],
                          cwd=base+'pybotwar')
 
@@ -108,19 +125,19 @@ class RootController(BaseController):
 
     @expose()
     def upload_code(self, **kw):
-        upload = kw['code'].file
+        code = kw['code']
         name = kw['name']
         uid = kw['userid']
-
-        robot = model.Robot(userid=uid, name=name)
-        DBSession.add(robot)
 
         # Try to detect OpenShiftiness
         base = os.environ.get('OPENSHIFT_REPO_DIR') or '../../'
 
-        print("%spybotwar/robots/%s@%s.py" % (base, name, uid))
         with open("%spybotwar/robots/%s@%s.py" % (base, name, uid), 'w') as local_file:
-            local_file.write(upload.read())
+            local_file.write(upload)
+
+        # Save a ref to the file in the DB
+        robot = model.Robot(userid=uid, name=name)
+        DBSession.add(robot)
 
         redirect("/")
 
