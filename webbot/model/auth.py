@@ -101,7 +101,7 @@ class User(DeclarativeBase):
 
     #{ Columns
 
-    user_id = Column(Integer, primary_key=True) #facebook userid
+    user_id = Column(Unicode(255), primary_key=True) #facebook userid
 
     display_name = Column(Unicode(255)) # display name, probably just "First Last"
 
@@ -109,7 +109,7 @@ class User(DeclarativeBase):
 
     def __repr__(self):
         return ('<User: name=%s, user_id=%s, robots=%s>' % (
-                self.display_name, self.user_id, self.robots)).encode('utf-8')
+                self.display_name, self.user_id)).encode('utf-8')
 
     def __unicode__(self):
         return self.display_name or self.user_name
