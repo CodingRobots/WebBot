@@ -87,9 +87,6 @@ class RootController(BaseController):
     @expose('json')
     def robo_data(self, game_id):
         """Returns the current state of the game as JSON."""
-        # loc is the current location of the robot in
-        #   (x, y, robot_orientation, turret_orientation)
-        # format
 
         if os.environ.get('OPENSHIFT_NOSQL_DB_TYPE') == 'mongodb':
             conn = Connection(os.environ.get('OPENSHIFT_NOSQL_DB_HOST'))
@@ -125,7 +122,7 @@ class RootController(BaseController):
 
     @expose()
     def upload_code(self, **kw):
-        code = kw['code']
+        code = kw['code'].value
         name = kw['name']
         uid = kw['userid']
 
@@ -133,7 +130,7 @@ class RootController(BaseController):
         base = os.environ.get('OPENSHIFT_REPO_DIR') or '../../'
 
         with open("%spybotwar/robots/%s@%s.py" % (base, name, uid), 'w') as local_file:
-            local_file.write(upload)
+            local_file.write(code)
 
         # Save a ref to the file in the DB
         robot = model.Robot(userid=uid, name=name)
