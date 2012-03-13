@@ -104,7 +104,12 @@ class RootController(BaseController):
         if 'user' in kwargs:
             robots.append(userid + '@' + kwargs['user'])
 
-        if 'example' in kwargs:
+        # If there is only one checked robot, it will be returned as a str,
+        # not a list.
+        examples = kwargs.get('example', [])
+        if isinstance(examples, basestring):
+            robots.append(examples)
+        else:
             robots.extend(kwargs['example'])
 
         robots = ' '.join(robots)
