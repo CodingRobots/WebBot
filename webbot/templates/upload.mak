@@ -1,18 +1,13 @@
 <%inherit file="local:templates.master"/>
 <%def name="title()">
-	Upload your robot code here
+	${page_title}
 </%def>
 
 <div id="info">
 <p>
-Upload your robots code here
+${form_title}
 </p>
-<form action="upload_code" enctype="multipart/form-data" method="POST">
-File to upload: <input type="file" name="code"/><br />
-Name of robot: <input type="text" name="name"/><br />
-<input type="hidden" name="userid"/>
-<input type="submit" name="submit" value="Upload!"/>
-</form>
+${form.display() | n}
 
 </div>
 <%def name="sidebar_bottom()"></%def>

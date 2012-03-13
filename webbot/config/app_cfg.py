@@ -7,10 +7,10 @@ This file complements development/deployment.ini.
 Please note that **all the argument values are strings**. If you want to
 convert them into boolean, for example, you should use the
 :func:`paste.deploy.converters.asbool` function, as in::
-    
+
     from paste.deploy.converters import asbool
     setting = asbool(global_conf.get('the_setting'))
- 
+
 """
 
 import os
@@ -20,7 +20,7 @@ from pylons import config
 
 import webbot
 from webbot import model
-from webbot.lib import app_globals, helpers 
+from webbot.lib import app_globals, helpers
 
 class OpenShiftConfig(AppConfig):
 
@@ -57,8 +57,8 @@ base_config.model = webbot.model
 base_config.DBSession = webbot.model.DBSession
 # Configure the authentication backend
 
-# YOU MUST CHANGE THIS VALUE IN PRODUCTION TO SECURE YOUR APP 
-base_config.sa_auth.cookie_secret = "ChangeME" 
+# YOU MUST CHANGE THIS VALUE IN PRODUCTION TO SECURE YOUR APP
+base_config.sa_auth.cookie_secret = "ChangeME"
 
 base_config.auth_backend = 'sqlalchemy'
 base_config.sa_auth.dbsession = model.DBSession
@@ -84,3 +84,7 @@ base_config.sa_auth.post_login_url = '/post_login'
 # You may optionally define a page where you want users to be redirected to
 # on logout:
 base_config.sa_auth.post_logout_url = '/post_logout'
+
+# Turn off tw and turn on tw2
+base_config.use_toscawidgets = False
+base_config.use_toscawidgets2 = True

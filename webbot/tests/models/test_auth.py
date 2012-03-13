@@ -16,20 +16,20 @@ class TestGroup(ModelTest):
 
 class TestUser(ModelTest):
     """Unit test case for the ``User`` model."""
-    
+
     klass = model.User
     attrs = dict(
-        user_name = u"ignucius",
-        email_address = u"ignucius@example.org"
+        user_id = u"ignucius",
+        display_name = u"ignucius@example.org"
         )
 
     def test_obj_creation_username(self):
         """The obj constructor must set the user name right"""
-        eq_(self.obj.user_name, u"ignucius")
+        eq_(self.obj.user_id, u"ignucius")
 
     def test_obj_creation_email(self):
         """The obj constructor must set the email right"""
-        eq_(self.obj.email_address, u"ignucius@example.org")
+        eq_(self.obj.display_name, u"ignucius@example.org")
 
     def test_no_permissions_by_default(self):
         """User objects should have no permission by default."""
@@ -37,13 +37,13 @@ class TestUser(ModelTest):
 
     def test_getting_by_email(self):
         """Users should be fetcheable by their email addresses"""
-        him = model.User.by_email_address(u"ignucius@example.org")
+        him = model.User.by_display_name(u"ignucius@example.org")
         eq_(him, self.obj)
 
 
 class TestPermission(ModelTest):
     """Unit test case for the ``Permission`` model."""
-    
+
     klass = model.Permission
     attrs = dict(
         permission_name = u"test_permission",
