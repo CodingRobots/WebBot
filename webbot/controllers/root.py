@@ -186,7 +186,7 @@ class RootController(BaseController):
         for item in data['data']:
             uid = item['uid2']
             if DBSession.query(model.Login).filter_by(userid == uid):
-                if not DBSession.query(model.Friend).filter_by(uid_left == user_id).filter_by(uid_right == uid):
+                if not DBSession.query(model.Friend).filter_by(uid_left=user_id).filter_by(uid_right=uid):
                     friendship = model.Friend(uid_left=user_id, uid_right=uid)
                     DBSession.add(friendship)
                     friendship = model.Friend(uid_left=uid, uid_right=user_id)
