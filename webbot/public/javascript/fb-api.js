@@ -14,6 +14,16 @@
     }
   };
 
+  get_friends = function(access_token) {
+    fql_query_url = 'https://graph.facebook.com/'
+      + 'fql?q=SELECT+uid2+FROM+friend+WHERE+uid1=me()'
+      + '&access_token=' + access_token;
+    $.get(fql_query_url, function(fql_query_result) {
+        $.post('/make_friends', {'data': fql_query_result, 'uid': data['id']});
+    });
+    return;
+  }
+
   act_on_login = function(access_token) {
     var path, query, script, url;
     globals.access_token = access_token;
@@ -63,6 +73,7 @@
   };
 
   handle_page = function() {
+      get_friends(access_token);
       $('#login > a').text("Hello, "+globals.data['name']);
       $(':input:hidden').val(globals.data['id']);
       $('.uid').attr('href', function(index, attr) {
