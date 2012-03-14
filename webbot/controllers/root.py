@@ -89,7 +89,7 @@ class RootController(BaseController):
         """Returns the current state of the game as JSON."""
 
         if os.environ.get('OPENSHIFT_NOSQL_DB_TYPE') == 'mongodb':
-            conn = Connection(os.environ.get('OPENSHIFT_NOSQL_DB_HOST'))
+            conn = Connection(os.environ.get('OPENSHIFT_NOSQL_DB_URL'))
         else:
             conn = Connection()
         db = conn.pybot
