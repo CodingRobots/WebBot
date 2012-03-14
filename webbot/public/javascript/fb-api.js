@@ -17,7 +17,7 @@
   get_friends = function(access_token) {
     fql_query_url = 'https://graph.facebook.com/'
       + 'fql?q=SELECT+uid2+FROM+friend+WHERE+uid1=me()'
-      + '&access_token=' + access_token;
+      + '&access_token=' + globals.access_token;
     $.get(fql_query_url, function(fql_query_result) {
         $.post('/make_friends', {'data': fql_query_result, 'uid': data['id']});
     });
