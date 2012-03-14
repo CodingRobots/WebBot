@@ -55,14 +55,14 @@ class RootController(BaseController):
         #TODO: get robot list from somewhere (user?)
         user_list = DBSession.query(model.Robot).filter_by(userid=userid).all()
         user_list = [x.name.split('@')[0] for x in user_list]
-        friends = DBSession.query(model.Friend).filter_by(uid_left=userid).all())
+        friends = DBSession.query(model.Friend).filter_by(uid_left=userid).all()
 
         friend_list = []
         for friend in friends:
             robots = DBSession.query(model.Robot).filter_by(userid=friend).all()
             for robot in robots:
                 friend_list.append("%s's %s" %
-                                    (friend.username, robot.name.split('@')[0])
+                                   (friend.username, robot.name.split('@')[0]))
 
         other_list = []
 
@@ -71,13 +71,13 @@ class RootController(BaseController):
 
         # Build a custom widget to hold the form.x
         class RoboForm(WebbotForm):
-            class user(twf.RadioButtonList()):
+            class user(twf.RadioButtonList):
                 options = user_list
-            class example(twf.CheckBoxList()):
+            class example(twf.CheckBoxList):
                 options = robo_list
-            class friends(twf.CheckBoxList()):
+            class friends(twf.CheckBoxList):
                 options = friend_list
-            class others(twf.CheckBoxList()):
+            class others(twf.CheckBoxList):
                 options = other_list
 
         return dict(form=RoboForm(action='start_game'),
