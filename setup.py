@@ -24,6 +24,7 @@ testpkgs=['WebTest >= 1.2.3',
                ]
 install_requires=[
     "TurboGears2 >= 2.1.4",
+    "tg.devtools",
     "Mako",
     "zope.sqlalchemy >= 0.4",
     "repoze.tm2 >= 1.0a5",
