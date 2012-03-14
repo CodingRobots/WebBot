@@ -102,7 +102,7 @@ class RootController(BaseController):
         robots = []
 
         if 'user' in kwargs:
-            robots.append(userid + '@' + kwargs['user'])
+            robots.append(kwargs['user'] + '@' + userid)
 
         # If there is only one checked robot, it will be returned as a str,
         # not a list.
