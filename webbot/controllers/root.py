@@ -55,6 +55,17 @@ class RootController(BaseController):
         #TODO: get robot list from somewhere (user?)
         user_list = DBSession.query(model.Robot).filter_by(userid=userid).all()
         user_list = [x.name.split('@')[0] for x in user_list]
+        friends = DBSession.query(model.Friend).filter_by(uid_left=userid).all())
+
+        friend_list = []
+        for friend in friends:
+            robots = DBSession.query(model.Robot).filter_by(userid=friend).all()
+            for robot in robots:
+                friend_list.append("%s's %s" %
+                                    (friend.username, robot.name.split('@')[0])
+
+        other_list = []
+
         robo_list = [u'Ninja', u'Pirate', u'Robot', u'Wizard', u'Velociraptor',
                      u'Zombie', u'robot07', u'robot08']
 
@@ -64,6 +75,10 @@ class RootController(BaseController):
                 options = user_list
             class example(twf.CheckBoxList()):
                 options = robo_list
+            class friends(twf.CheckBoxList()):
+                options = friend_list
+            class others(twf.CheckBoxList()):
+                options = other_list
 
         return dict(form=RoboForm(action='start_game'),
                     page_title='',
