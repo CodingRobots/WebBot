@@ -60,5 +60,5 @@ def init_model(engine):
 
 # Import your model modules here.
 
-from webbot.model.robo import Login, Game, Robot
+from webbot.model.robo import Login, Game, Robot, Friend
 from webbot.model.auth import User, Group, Permission
