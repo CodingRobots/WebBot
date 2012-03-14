@@ -41,6 +41,7 @@ install_requires=[
     "mysql-python",
     "WebOb==1.0.8",
     "Pylons==1.0",
+    "mock",
     ]
 
 if sys.version_info[:2] == (2,4):
