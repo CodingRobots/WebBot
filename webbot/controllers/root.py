@@ -89,8 +89,8 @@ class RootController(BaseController):
         """List all the available games."""
         user_games = DBSession.query(model.Game).filter_by(userid=userid).all()
         game_list = DBSession.query(model.Game) \
-                             .filter(model.Game.userid != userid) \
-                             .order_by(desc(model.Game.date)).limit(10).all()
+            .filter(model.Game.userid != userid) \
+            .order_by(desc(model.Game.date)).limit(10).all()
         return dict(your_games=user_games, games=game_list)
 
     @expose('webbot.templates.upload')
@@ -202,7 +202,7 @@ class RootController(BaseController):
         if not request.identity:
             login_counter = request.environ['repoze.who.logins'] + 1
             redirect('/login',
-                params=dict(came_from=came_from, __logins=login_counter))
+                     params=dict(came_from=came_from, __logins=login_counter))
         userid = request.identity['repoze.who.userid']
         flash(_('Welcome back, %s!') % userid)
         redirect(came_from)
