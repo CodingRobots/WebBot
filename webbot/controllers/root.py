@@ -116,20 +116,27 @@ class RootController(BaseController):
     @expose()
     def start_game(self, **kwargs):
         userid = kwargs['userid']
+        del kwargs['userid']
         robots = []
 
         if 'user' in kwargs:
             robots.append(kwargs['user'] + '@' + userid)
+            del kwargs['user']
 
         # If there is only one checked robot, it will be returned as a str,
         # not a list.
-        examples = kwargs.get('example', [])
-        if isinstance(examples, basestring):
-            robots.append(examples)
-        else:
-            robots.extend(kwargs['example'])
+        for bot_list in kwargs.values():
+            if isinstance(bot_list, basestring):
+                robots.append(bot_list)
+            else:
+                robots.extend(bot_list)
+
+        # Maintain a separate list for the name without the ids
+        split_list = [x.split('@')[0] for x in robots]
+        split_bots = ' '.join(split_list)
 
         robots = ' '.join(robots)
+
         game_id = str(uuid.uuid4())
 
         # Try to detect OpenShiftiness
@@ -137,7 +144,7 @@ class RootController(BaseController):
         subprocess.Popen(['python', 'main.py', '-g', '-I', game_id, '-R', robots],
                          cwd=base+'pybotwar')
 
-        new_game = model.Game(id=game_id, name=robots, userid=userid, date=datetime.now())
+        new_game = model.Game(id=game_id, name=split_bots, userid=userid, date=datetime.now())
         DBSession.add(new_game)
         sleep(1)
         redirect('/game?game_id=%s' % (game_id))
