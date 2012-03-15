@@ -22,16 +22,15 @@ class Game(DeclarativeBase):
 class Login(DeclarativeBase):
     __tablename__ = 'user'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Unicode(255), primary_key=True)
     name = Column(Unicode(255), nullable=False)
-    access_token = Column(Unicode(255), nullable=False)
 
 class Friend(DeclarativeBase):
     __tablename__ = 'friend'
 
     id = Column(Integer, primary_key=True)
-    uid_left = Column(Integer, nullable=False)
-    uid_right = Column(Integer, nullable=False)
+    uid_left = Column(Unicode(255), nullable=False)
+    uid_right = Column(Unicode(255), nullable=False)
 
 class Robot(DeclarativeBase):
     __tablename__ = 'robot'

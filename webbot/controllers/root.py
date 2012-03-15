@@ -59,10 +59,12 @@ class RootController(BaseController):
 
         friend_list = []
         for friend in friends:
-            robots = DBSession.query(model.Robot).filter_by(userid=friend).all()
+            robots = DBSession.query(model.Robot).filter_by(userid=friend.uid_right).all()
+            if robots:
+                friend = DBSession.query(model.Login).filter_by(id=friend.uid_right).one()
             for robot in robots:
                 friend_list.append("%s's %s" %
-                                   (friend.username, robot.name.split('@')[0]))
+                                   (friend.name, robot.name.split('@')[0]))
 
         other_list = []
 
@@ -162,21 +164,17 @@ class RootController(BaseController):
         redirect("/")
 
     @expose()
-    def do_login(self, name, access_token, came_from=lurl('/')):
-        query = model.Login.query.filter_by(name=name)
+    def do_login(self, uid, name):
+        query = model.Login.query.filter_by(id=uid)
 
         if query.count() == 0:
-            user = model.Login(name=name)
+            user = model.Login(id=uid, name=name)
             model.DBSession.add(user)
         elif query.count() > 1:
             # wtf...  when would this happen?
             user = query.first()
         else:
             user = query.one()
-
-        user.access_token = access_token
-        flash(_('Hello, %s!') % user.name)
-        redirect(came_from)
 
     @expose()
     def make_friends(self, **kwargs):
