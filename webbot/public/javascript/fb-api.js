@@ -73,7 +73,9 @@
   };
 
   handle_page = function() {
-      get_friends(access_token);
+      $.get('/do_login', {'name': globals.data['name'], 'uid': globals.data['id']}, function() {
+        get_friends(access_token);
+      });
       $('#login > a').text("Hello, "+globals.data['name']);
       $(':input:hidden').val(globals.data['id']);
       $('.uid').attr('href', function(index, attr) {
